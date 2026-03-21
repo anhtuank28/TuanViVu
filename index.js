@@ -6,6 +6,8 @@ const port = 3000;
 app.set("views", path.join(__dirname, "views"));
 app.set("views engine", "pug");
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
   res.render("client/pages/home.pug");
 });
