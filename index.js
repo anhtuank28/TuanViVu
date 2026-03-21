@@ -1,12 +1,18 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const port = 3000;
 
+app.set("views", path.join(__dirname, "views"));
+app.set("views engine", "pug");
+
 app.get("/", (req, res) => {
-  res.send("Trang chủ 124");
+  res.render("client/pages/home.pug");
 });
 app.get("/tours", (req, res) => {
-  res.send("Danh sách tour");
+  res.render("client/pages/tour-list.pug", {
+    pageTitle: "Danh sach",
+  });
 });
 
 app.listen(port, () => {
