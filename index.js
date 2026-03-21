@@ -3,12 +3,12 @@ const app = express();
 const port = 3000;
 
 app.get("/", (req, res) => {
-  res.send("Trang chủ");
+  res.send("Trang chủ 124");
 });
 app.get("/tours", (req, res) => {
   res.send("Danh sách tour");
 });
 
 app.listen(port, () => {
-  console.log(`Web đang chạy trên cổng ${port}`);
+  console.log(`Web đang cổng ${port}`);
 });
