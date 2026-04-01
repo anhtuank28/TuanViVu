@@ -1,3 +1,6 @@
+- settingWebsiteInfo = settingWebsiteInfo || {}
+- categoryList = categoryList || []
+
 // Top Header
 .top-header
   .container
@@ -15,6 +18,7 @@
           i.fa-solid.fa-building
           | #{settingWebsiteInfo.address}
 // End Top Header
+
 // Header
 header.header
   .container
@@ -22,38 +26,44 @@ header.header
       // Menu Mobile
       button.inner-menu-mobile
         i.fa-solid.fa-bars
+
       // Logo
       .inner-logo
         a(href="/")
           img(
-            alt=settingWebsiteInfo.websiteName
-            src=settingWebsiteInfo.logo
-            )
+            alt=settingWebsiteInfo.websiteName || "Logo"
+            src=settingWebsiteInfo.logo || "/assets/images/logo.png"
+          )
+
       // Menu
       nav.inner-menu
         ul
           li
             a.active(href="/") Trang chủ
+
           each item in categoryList
             li
               a(href=`/category/${item.slug}`) #{item.name}
-              if(item.children)
+              if(item.children && item.children.length)
                 i.fa-solid.fa-caret-down
                 ul
                   each itemChild in item.children
                     li
                       a(href=`/category/${itemChild.slug}`) #{itemChild.name}
+
           li
             a(href="#") Tin tức
           li
             a(href="#") Liên hệ
+
         .inner-overlay
+
       // Cart
       .inner-cart
         a(href="/cart")
           img(
             alt="Cart" 
             src="/assets/images/icon-cart.svg"
-            )
+          )
           span(mini-cart) 0
 // End Header

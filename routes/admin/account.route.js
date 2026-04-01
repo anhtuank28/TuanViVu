@@ -4,6 +4,8 @@ const accountController = require("../../controllers/admin/account.controller");
 
 router.get("/login", accountController.login);
 router.get("/register", accountController.register);
+router.post("/register", accountController.registerPost);
+
 router.get("/forgot-pasword", accountController.forgotPassword);
 router.get("/otp-pasword", accountController.otpPassword);
 router.get("/reset-pasword", accountController.resetPassword);
