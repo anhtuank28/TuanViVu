@@ -7,6 +7,8 @@ require("dotenv").config();
 const adminRoutes = require("./routes/admin/index.route");
 const clientRoutes = require("./routes/client/index.route");
 const variableConfig = require("./config/variable");
+const cookieParser = require('cookie-parser')
+
 
 //ket noi database
 const database = require("./config/database");
@@ -18,11 +20,17 @@ app.set("view engine", "pug");
 //thiet lap thu muc chua file tinh cua frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-//tạo biến toàn cục trong file pug
+//tạo biến toàn cục trong file PUG
 app.locals.pathAdmin = variableConfig.pathAdmin;
+
+//Tạo biến toàn cục trong các file backend
+global.pathAdmin=variableConfig.pathAdmin;
 
 //cho phép gửi data lên dạng json
 app.use(express.json());
+
+//su dung cookie-parser
+app.use(cookieParser());
 
 //thiet lap duong dan
 app.use(`/${variableConfig.pathAdmin}`, adminRoutes);
