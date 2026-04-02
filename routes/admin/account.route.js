@@ -14,9 +14,12 @@ router.post(
 );
 
 router.get("/register-initial", accountController.registerInitial);
-router.get("/forgot-pasword", accountController.forgotPassword);
-router.get("/otp-pasword", accountController.otpPassword);
-router.get("/reset-pasword", accountController.resetPassword);
+router.get("/forgot-password", accountController.forgotPassword);
+
+router.post("/forgot-password", accountController.forgotPasswordPost);
+
+router.get("/otp-password", accountController.otpPassword);
+router.get("/reset-password", accountController.resetPassword);
 
 
 router.post(`/logout`,accountController.logoutPost)

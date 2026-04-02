@@ -12,6 +12,10 @@ const profileRoutes = require("./profile.route");
 const authMiddleware=require("../../middlewares/admin/auth.middleware");
 
 
+router.use((req,res,next)=>{
+  res.setHeader("Cache-control","no-store")
+  next();
+})
 
 router.use("/account", accountRoutes);
 router.use("/dashboard",authMiddleware.verityToken ,dashboardRoutes);

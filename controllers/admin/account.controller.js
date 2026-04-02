@@ -1,7 +1,10 @@
 const AccountAdmin = require("../../models/account-admin.model");
 const bcrypt = require("bcryptjs");
 const jwt= require("jsonwebtoken");
+const generateHelper=require("../../helpers/generate.helper");
+const forgotPassword = require('../../models/forgot-password.model');
 
+const mailHelper=require("../../helpers/mail.helper");
 
 module.exports.login = async (req, res) => {
   res.render("admin/pages/login", {
@@ -10,7 +13,7 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.loginPost = async (req, res) => {
-  const {  email, password } = req.body;
+  const {  email, password,rememberPassword } = req.body;
   
   const exitsAccount=await AccountAdmin.findOne({
     email:email
@@ -33,13 +36,13 @@ module.exports.loginPost = async (req, res) => {
     return ;
   }
   
-  // if(exitsAccount.status !="active"){
-  //   res.json({
-  //     code:"error",
-  //     message:"Tài khoản chưa được kích hoạt"
-  //   });
-  //   return ;
-  // }
+  if(exitsAccount.status !="active"){
+    res.json({
+      code:"error",
+      message:"Tài khoản chưa được kích hoạt"
+    });
+    return ;
+  }
 
   //tạo JWT
   const token=jwt.sign(
@@ -49,13 +52,13 @@ module.exports.loginPost = async (req, res) => {
     },
     process.env.JWT_SECRET, //chuổi mã bảo mật
     {
-      expiresIn:'1d' //token co thoi han 1 ngay
+      expiresIn: rememberPassword ? '30d' : '1d' //token co thoi han 1 ngay
     } 
   )
 
   //lưu token vào cookie
   res.cookie("token",token,{
-    maxAge:24*60*60*1000, //token co hieu luc trong 1 ngay
+    maxAge: rememberPassword ? (30*24*60*60*1000) :  (24*60*60*1000), //token co hieu luc trong 1 ngay
     httpOnly:true,
     sameSite:"strict"
   })
@@ -111,6 +114,59 @@ module.exports.registerInitial = async (req, res) => {
   });
 };
 
+module.exports.forgotPasswordPost= async (req, res) => {
+  const {email}=req.body;
+  console.log(email);
+
+  //kiểm tra xem email có tồn tại trong hệ thống không
+const exitsAccount= await AccountAdmin.findOne({
+  email:email
+
+})
+if(!exitsAccount){
+  res.json({
+    code:"error",
+    message:"Email không tồn tại trong hệ thống"
+  })
+  return ;
+}
+
+  //kiểm tra email đã tồn tại trong forgetPassword chưa
+  const exitsEmailInForgotPassword=await forgotPassword.findOne({
+    email:email
+  })
+  if(exitsEmailInForgotPassword){
+    res.json({
+    code:"error",
+    message:"Vui lòng gửi lại yêu cầu sau 5p"
+  })
+  return ;
+  }
+
+  //tạo mã OTP
+  const otp=generateHelper.generateRandomNumber(6);
+  console.log(otp);
+
+  //lưu vào database: email, otp sau 5p sẽ tự động xoá bản ghi
+  const newRecord= new forgotPassword({
+    email:email,
+    otp:otp,
+    expireAt: Date.now()+5*60*1000
+  })
+  await newRecord.save();
+
+  //gửi mã OTP qua email cho người dùng tự động
+  const subject="Mã OTP lấy lại mật khẩu";
+  const content=`Mã OTP của bạn là <b style="color: green;">${otp}</b>.
+   Mã OTP có hiệu lực trong 5 phút, 
+   vui lòng không cung cấp cho bất kỳ ai`;
+  mailHelper.sendMail(email,subject,content);
+
+  res.json({
+    code:"success",
+    message:"Đã gửi mã OTP qua email"
+  })
+};
 module.exports.forgotPassword = async (req, res) => {
   res.render("admin/pages/forgot-password", {
     pageTitle: "Quên mật khẩu",

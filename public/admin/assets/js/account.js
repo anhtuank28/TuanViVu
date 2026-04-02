@@ -43,12 +43,12 @@ if (loginForm) {
     .onSuccess((event) => {
       const email = event.target.email.value;
       const password = event.target.password.value;
-      // const rememberPassword = event.target.rememberPassword.checked;
+      const rememberPassword = event.target.rememberPassword.checked;
 
       const dataFinal = {
         email: email,
         password: password,
-        // rememberPassword: rememberPassword,
+        rememberPassword: rememberPassword,
       };
 
       fetch(`/${pathAdmin}/account/login`, {
