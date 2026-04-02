@@ -177,6 +177,54 @@ module.exports.otpPassword = async (req, res) => {
     pageTitle: "Mã OTP",
   });
 };
+
+module.exports.otpPasswordPost = async (req, res) => {
+  const {otp,email}=req.body;
+
+  //kiểm tra có tông tại bản ghi trong forgotPassword
+  const existRecord = await forgotPassword.findOne({
+    otp:otp,
+    email:email
+  }
+  )
+
+  if(!existRecord){
+    res.json({
+      code:"error",
+      message:'Mã OTP không chính xác'
+    })
+    return;
+  }
+  //Tìm thông tin của user trong Account Admin
+  const account=await AccountAdmin.findOne({
+    email:email
+  })
+  //Tạo JWT
+  const token=jwt.sign(
+    { 
+      id: account.id,
+      email:account.email
+    },
+    process.env.JWT_SECRET, //chuổi mã bảo mật
+    {
+      expiresIn:  '1d' //token co thoi han 1 ngay
+    } 
+  )
+
+  //lưu token vào cookie
+  res.cookie("token",token,{
+    maxAge: 24*60*60*1000, //token co hieu luc trong 1 ngay
+    httpOnly:true,
+    sameSite:"strict"
+  })
+
+
+  res.json({
+    code:"success",
+    message:"Xác thực OTP thành công"
+  })
+};
+
 module.exports.resetPassword = async (req, res) => {
   res.render("admin/pages/reset-password", {
     pageTitle: "đổi mật khẩu",
