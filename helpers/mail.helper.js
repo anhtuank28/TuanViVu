@@ -2,13 +2,12 @@ const nodemailer = require('nodemailer');
 
 
 module.exports.sendMail=(email,subject,content)=>{
-    // Import the Nodemailer library
-
+const secure= process.env.EMAIL_SECURE == "true" //? true :false;
 // Create a transporter object
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // use false for STARTTLS; true for SSL on port 465
+  secure: false, // false:http
   auth: {
     user: process.env.EMAIL_USERNAME,
     pass: process.env.EMAIL_PASSWORD,
