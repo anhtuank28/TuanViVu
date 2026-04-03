@@ -29,7 +29,7 @@ module.exports.loginPost = async (req, res) => {
 
   const isPasswordValid= await bcrypt.compare(password,exitsAccount.password);
   if(!isPasswordValid){
-    req.json({
+    res.json({
       code:"error",
       message:"Mật khẩu không đúng"
     });
@@ -229,6 +229,25 @@ module.exports.resetPassword = async (req, res) => {
   res.render("admin/pages/reset-password", {
     pageTitle: "đổi mật khẩu",
   });
+};
+
+module.exports.resetPasswordPost = async (req, res) => {
+  const {password}=req.body;
+
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword=await bcrypt.hash(password,salt);
+
+  await AccountAdmin.updateOne({
+    _id: req.account.id
+  },{
+    password:hashPassword
+  })
+
+  res.json({
+    code:"success",
+    message:"Đổi mật khẩu thành công"
+  })
+
 };
 
 module.exports.logoutPost=async(req,res)=>{

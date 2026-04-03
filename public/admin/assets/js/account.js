@@ -283,7 +283,7 @@ if (resetPasswordForm) {
         errorMessage: "Mật khẩu phải chứa ít nhất một chữ số!",
       },
       {
-        validator: (value) => /[@$!%*?&]/.test(value),
+        validator: (value) => /[@$!%*?&#]/.test(value),
         errorMessage: "Mật khẩu phải chứa ít nhất một ký tự đặc biệt!",
       },
     ])

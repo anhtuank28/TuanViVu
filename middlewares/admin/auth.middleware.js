@@ -22,6 +22,9 @@ module.exports.verityToken= async (req,res,next)=>{
             res.redirect(`/${pathAdmin}/account/login`);
             return;
         }
+
+        req.account=exitsAccount;
+
             next();
     }catch(error){
         res.clearCookie("token");
