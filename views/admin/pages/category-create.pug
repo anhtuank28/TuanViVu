@@ -1,5 +1,5 @@
 extends ../layouts/default.pug
-include ../mixins/options.pug
+//- include ../mixins/options.pug
 
 block main
   h1.box-title Tạo danh mục
@@ -13,7 +13,7 @@ block main
         label(class="inner-label" for="parent") Danh mục cha
         select(id="parent" name="parent")
           option(value="") -- Chọn danh mục --
-          +options(categoryList, 0)
+          //- +options(categoryList, 0)
       .inner-group
         label(class="inner-label" for="position") Vị trí
         input(type="number" id="position" name="position")

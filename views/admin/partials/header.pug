@@ -1,8 +1,8 @@
 header.header
   .inner-logo
     a(href=`/${pathAdmin}/dashboard`)
-      span 28
-      span Admin
+      span Tuan
+      span ViVu
   .inner-wrap
     .inner-notify
       img(src="/admin/assets/images/icon-bell.svg", alt="")
@@ -11,7 +11,7 @@ header.header
       .inner-avatar
         //- img(src=account.avatar, alt=account.fullName)
       .inner-text
-        .inner-name a
+        .inner-name #{account.fullName}
         .inner-role a
     button.inner-button-menu
       <i class="fa-solid fa-bars"></i>

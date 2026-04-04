@@ -23,9 +23,11 @@ module.exports.verityToken= async (req,res,next)=>{
             return;
         }
 
-        req.account=exitsAccount;
-
-            next();
+        req.account=exitsAccount;//Để gắn nick mà đang tìm được trong db vào thuộc tính account và gửi req lên controller
+        res.locals.account=exitsAccount;//để trong các file pug có thể dùng được exitsAccount
+            
+        
+        next();
     }catch(error){
         res.clearCookie("token");
         res.redirect(`/${pathAdmin}/account/login`);

@@ -16,8 +16,8 @@ block main
       .inner-item
         select(filter-created-by)
           option(value="") Người tạo
-          each item in accountAdminList
-            option(value=item.id) #{item.fullName}
+          //- each item in accountAdminList
+          //-   option(value=item.id) #{item.fullName}
       .inner-item.inner-date
         input(type="date" filter-start-date)
         span -
@@ -64,7 +64,7 @@ block main
             th Cập nhật bởi
             th Hành động
         tbody
-          each item in categoryList
+          //- each item in categoryList
             tr
               td(class="inner-center")
                 input(type="checkbox" class="inner-check" check-item=item.id)
@@ -98,8 +98,8 @@ block main
 
   //- Section 7
   .section-7
-    span(class="inner-label") Hiển thị #{pagination.skip + 1} - #{pagination.skip + categoryList.length} của #{pagination.totalRecord}
-    select(class="inner-pagination" pagination)
-      - for (let i = 1; i <= pagination.totalPage; i++)
-        option(value=i) Trang #{i}
+    //- span(class="inner-label") Hiển thị #{pagination.skip + 1} - #{pagination.skip + categoryList.length} của #{pagination.totalRecord}
+    //- select(class="inner-pagination" pagination)
+    //-   - for (let i = 1; i <= pagination.totalPage; i++)
+    //-     option(value=i) Trang #{i}
   //- End Section 7
