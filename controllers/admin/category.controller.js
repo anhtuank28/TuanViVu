@@ -1,15 +1,30 @@
 const Category = require('../../models/category.model');
 
+const categoryHelper=require("../../helpers/category.helper");
+
 module.exports.list = async (req, res) => {
   res.render("admin/pages/category-list", {
     pageTitle: "List",
   });
 };
 module.exports.create = async (req, res) => {
+  const categoryList=await Category.find({
+    deleted:false
+  })
+  
+  const categoryTree=categoryHelper.buildCategoryTree(categoryList);
+  console.log(categoryTree);
+  
+
   res.render("admin/pages/category-create", {
     pageTitle: "Tạo thư mục",
+    categoryList:categoryTree
   });
 };
+
+
+
+
 module.exports.createPost = async (req, res) => {  
   if(req.body.position){
     req.body.position=parseInt(req.body.position);
