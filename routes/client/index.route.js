@@ -7,4 +7,5 @@ router.use("/tours", tourRoutes);
 router.use("/", homeRoutes);
 router.use("/cart", cartRoutes);
 
+
 module.exports = router;
