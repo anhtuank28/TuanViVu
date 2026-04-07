@@ -8,8 +8,8 @@ const adminRoutes = require("./routes/admin/index.route");
 const clientRoutes = require("./routes/client/index.route");
 const variableConfig = require("./config/variable");
 const cookieParser = require('cookie-parser')
-
-
+const flash=require("express-flash")
+const session=require("express-session");
 //ket noi database
 const database = require("./config/database");
 database.connect();
@@ -30,7 +30,11 @@ global.pathAdmin=variableConfig.pathAdmin;
 app.use(express.json());
 
 //su dung cookie-parser
-app.use(cookieParser());
+app.use(cookieParser("abcqfsfsdsv"));
+
+//nhúng flash
+app.use(session({cookie:{maxAge: 60000}}))
+app.use(flash());
 
 //thiet lap duong dan
 app.use(`/${variableConfig.pathAdmin}`, adminRoutes);
