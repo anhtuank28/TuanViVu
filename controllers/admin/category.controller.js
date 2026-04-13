@@ -7,10 +7,31 @@ module.exports.list = async (req, res) => {
       deleted:false,
     }
     
+    //lọc theo trạng thái
     if(req.query.status){
       find.status=req.query.status;
     }
+    //lọc theo người tạo
+    if(req.query.createdBy){
+      find.createdBy=req.query.createdBy
+    }
 
+    //lọc theo ngày tạo
+    const dateFilter={};
+
+    if(req.query.startDate){
+      const startDate=moment(req.query.startDate).startOf("date").toDate();
+      dateFilter.$gte=startDate;
+    }
+    if(req.query.endDate){
+      const endDate=moment(req.query.endDate).endOf("date").toDate();
+      dateFilter.$lte=endDate;
+    }
+    if(Object.keys(dateFilter).length>0){
+      find.createdAt=dateFilter;
+    }
+    console.log(Object.keys(dateFilter));
+    
 
     const categoryList= await Category.find(find).sort({
       position:"desc"
@@ -34,9 +55,13 @@ module.exports.list = async (req, res) => {
       item.updatedAtFormat=moment(item.updatedAt).format("HH:mm - DD/MM/YYYY")
     }
 
+    //Danh sách tài khoản quản trị
+    const accountAdminList=await AccountAdmin.find({}).select("id fullName");
+
   res.render("admin/pages/category-list", {
     pageTitle: "Quản lý danh mục",
-    categoryList:categoryList
+    categoryList:categoryList,
+    accountAdminList:accountAdminList
   });
 };
 module.exports.create = async (req, res) => {
@@ -111,8 +136,6 @@ module.exports.editPatch = async (req, res) => {
   try{
     const id= req.params.id;
 
-
-
   if(req.body.position){
     req.body.position=parseInt(req.body.position);
   }else{
@@ -171,4 +194,42 @@ module.exports.deletePatch=async(req,res)=>{
     })
   }
   
+}
+
+module.exports.changeMultiPatch=async(req,res)=>{
+ try{
+  const {option,ids}=req.body;
+
+  switch(option){
+    case "active":
+    case "inactive":
+      await Category.updateMany({
+        _id: {$in :ids} //tim nhung id co trong ids
+      },{
+        status: option
+      })
+      req.flash("success","Đổi trạng thái thành công");
+      break; 
+    case "delete":
+      await Category.updateMany({
+        _id: {$in :ids} //tim nhung id co trong ids
+      },{
+        deleted: true,
+        deletedBy: req.account.id,
+        deletedAt:Date.now()
+      })
+      req.flash("success","Xoá thành công");
+      break; 
+
+  }
+
+  res.json({
+    code:"success"
+  })
+ }catch(error){
+  res.json({
+    code:"error",
+    messageL:"Id không tồn tại trong hệ thống"
+  })
+ }
 }
