@@ -1,0 +1,46 @@
+const Joi = require("joi");
+
+module.exports.createPost = (req, res, next) => {
+    const schema = Joi.object({
+        name: Joi.string()
+            .required()
+            .messages({
+                "string.empty": "Vui lòng nhập tên tour",
+            }),
+        category: Joi.string().allow(""),
+        position: Joi.number(),
+        status: Joi.string().allow(""),
+        avatar: Joi.string().allow(""),
+        priceAdult: Joi.number(),
+        priceChildren: Joi.number(),
+        priceBaby: Joi.number(),
+        priceNewAdult: Joi.number(),
+        priceNewChildren: Joi.number(),
+        priceNewBaby: Joi.number(),
+        stockAdult: Joi.number(),
+        stockChildren: Joi.number(),
+        stockBaby: Joi.number(),
+        locations: Joi.array(),
+        time: Joi.string().allow(""),
+        vehicle: Joi.string().allow(""),
+        departureDate: Joi.date(),
+        information: Joi.string().allow(""),
+        schedules: Joi.array(),
+        createdBy: Joi.string().allow(""),
+        updatedBy: Joi.string().allow("")
+
+
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+        const errorMessage = error.details[0].message;
+        res.json({
+            code: "error",
+            message: errorMessage,
+        });
+        return;
+    }
+    next();
+};
+
