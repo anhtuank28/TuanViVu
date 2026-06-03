@@ -223,8 +223,106 @@ module.exports.editPatch = async (req, res) => {
   
 }
 module.exports.trash = async (req, res) => {
+  const find = {
+    deleted: true
+  };
+
+  // Lọc theo trạng thái
+  if (req.query.status) {
+    find.status = req.query.status;
+  }
+
+  // Lọc theo người tạo
+  if (req.query.createdBy) {
+    find.createdBy = req.query.createdBy;
+  }
+
+  // Lọc theo ngày tạo
+  const dateFilter = {};
+  if (req.query.startDate) {
+    const startDate = moment(req.query.startDate).startOf("date").toDate();
+    dateFilter.$gte = startDate;
+  }
+  if (req.query.endDate) {
+    const endDate = moment(req.query.endDate).endOf("date").toDate();
+    dateFilter.$lte = endDate;
+  }
+  if (Object.keys(dateFilter).length > 0) {
+    find.createdAt = dateFilter;
+  }
+
+  // Tìm kiếm
+  if (req.query.keyword) {
+    const slugify = require("slugify");
+    const keyword = slugify(req.query.keyword, { lower: true });
+    const keywordRegex = new RegExp(keyword);
+    find.slug = keywordRegex;
+  }
+
+  // Lọc theo mức giá
+  if (req.query.price) {
+    const priceParts = req.query.price.split("-");
+    const priceFilter = {};
+    if (priceParts[0]) {
+      priceFilter.$gte = parseInt(priceParts[0]);
+    }
+    if (priceParts[1]) {
+      priceFilter.$lte = parseInt(priceParts[1]);
+    }
+    if (Object.keys(priceFilter).length > 0) {
+      find.priceNewAdult = priceFilter;
+    }
+  }
+
+  // Phân trang
+  const limitItems = 5;
+  let page = 1;
+  if (req.query.page) {
+    const currentPage = parseInt(req.query.page);
+    if (currentPage > 0) {
+      page = currentPage;
+    }
+  }
+  const totalRecord = await Tour.countDocuments(find);
+  const totalPage = Math.max(1, Math.ceil(totalRecord / limitItems));
+  if (page > totalPage) {
+    page = totalPage;
+  }
+  const skip = (page - 1) * limitItems;
+  const pagination = {
+    skip: skip,
+    totalRecord: totalRecord,
+    totalPage: totalPage
+  };
+
+  const tourList = await Tour.find(find).sort({
+    deletedAt: "desc"
+  }).limit(limitItems).skip(skip);
+
+  for (const item of tourList) {
+    if (item.createdBy) {
+      const infoAccountCreated = await AccountAdmin.findOne({
+        _id: item.createdBy
+      });
+      if (infoAccountCreated) {
+        item.createdByFullName = infoAccountCreated.fullName;
+      }
+    }
+    if (item.deletedBy) {
+      const infoAccountDeleted = await AccountAdmin.findOne({
+        _id: item.deletedBy
+      });
+        item.deletedByFullName = infoAccountDeleted.fullName;
+      
+    }
+
+    item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY");
+    item.deletedAtFormat = moment(item.deletedAt).format("HH:mm - DD/MM/YYYY");
+  }
+
   res.render("admin/pages/tour-trash", {
     pageTitle: "thùng rác tour",
+    tourList:tourList
   });
 };
 
