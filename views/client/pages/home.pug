@@ -4,6 +4,9 @@ include ../mixins/product-item.pug
 block main
   // Section 1
   .section-1
+    video.section-1__video-bg(autoplay loop muted playsinline poster="/assets/images/background-1.jpg")
+      source(src="https://minio.fares.vn/mixivivu-dev/video/Mixivivuduthuyen.mp4" type="video/mp4")
+    .section-1__overlay
     .container
       .inner-wrap
         h1.inner-title(
@@ -16,7 +19,7 @@ block main
           data-aos-duration="800" 
           data-aos="fade-up"
           )
-          | Hơn cả một chuyến đi, đó là những trải nghiệm khó quên trên mọi nẻo đường Châu Á, Mỹ, Úc và Âu.s
+          | Hơn cả một chuyến đi, đó là những trải nghiệm khó quên trên mọi nẻo đường Châu Á, Mỹ, Úc và Âu.
         form.inner-form(
           data-aos-delay="300" 
           data-aos-duration="800" 

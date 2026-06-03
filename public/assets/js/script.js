@@ -1,3 +1,16 @@
+// Header Scroll Effect
+window.addEventListener('scroll', () => {
+  const header = document.querySelector('.header');
+  if (header) {
+    if (window.scrollY > 80) {
+      header.classList.add('header--scrolled');
+    } else {
+      header.classList.remove('header--scrolled');
+    }
+  }
+});
+// End Header Scroll Effect
+
 // Menu Mobile
 const buttonMenuMobile = document.querySelector(".header .inner-menu-mobile");
 if(buttonMenuMobile) {

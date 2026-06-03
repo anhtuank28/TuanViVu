@@ -1401,6 +1401,31 @@ if (filterEndDate) {
 }
 // End Filter End Date
 
+// Filter Price
+const filterPrice = document.querySelector("[filter-price]");
+if (filterPrice) {
+  const url = new URL(window.location.href);
+
+  // Lắng nghe thay đổi lựa chọn
+  filterPrice.addEventListener("change", () => {
+    const value = filterPrice.value;
+    if (value) {
+      url.searchParams.set("price", value);
+    } else {
+      url.searchParams.delete("price");
+    }
+
+    window.location.href = url.href;
+  })
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("price");
+  if (valueCurrent) {
+    filterPrice.value = valueCurrent;
+  }
+}
+// End Filter Price
+
 // Filter Reset
 const filterReset = document.querySelector("[filter-reset]");
 if (filterReset) {

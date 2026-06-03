@@ -1,6 +1,13 @@
 const Joi = require("joi");
 
 module.exports.createPost = (req, res, next) => {
+    if (req.body.locations && typeof req.body.locations === 'string') {
+        try { req.body.locations = JSON.parse(req.body.locations); } catch (e) {}
+    }
+    if (req.body.schedules && typeof req.body.schedules === 'string') {
+        try { req.body.schedules = JSON.parse(req.body.schedules); } catch (e) {}
+    }
+
     const schema = Joi.object({
         name: Joi.string()
             .required()
@@ -28,8 +35,6 @@ module.exports.createPost = (req, res, next) => {
         schedules: Joi.array(),
         createdBy: Joi.string().allow(""),
         updatedBy: Joi.string().allow("")
-
-
     });
 
     const { error } = schema.validate(req.body);
@@ -43,4 +48,3 @@ module.exports.createPost = (req, res, next) => {
     }
     next();
 };
-

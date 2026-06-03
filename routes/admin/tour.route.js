@@ -11,4 +11,9 @@ router.get("/list", tourController.list);
 router.get("/create", tourController.create);
 router.post("/create", upload.single("avatar"), tourValidate.createPost, tourController.createPost);
 router.get("/trash", tourController.trash);
+router.get("/edit/:id", tourController.edit);
+router.patch("/delete/:id", tourController.deletePatch);
+router.patch("/edit/:id", upload.single("avatar"), tourValidate.createPost, tourController.editPatch);
+
+router.patch("/change-multi", tourController.changeMultiPatch);
 module.exports = router;
