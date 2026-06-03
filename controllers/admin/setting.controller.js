@@ -68,8 +68,20 @@ module.exports.accountAdminCreate = async (req, res) => {
   });
 };
 module.exports.roleList = async (req, res) => {
+  const find = {
+    deleted: false
+  };
+
+  if (req.query.keyword) {
+    const keywordRegex = new RegExp(req.query.keyword, "i");
+    find.name = keywordRegex;
+  }
+
+  const roleList= await Role.find(find);
+
   res.render("admin/pages/setting-role-list", {
     pageTitle: "Nhóm quyền",
+    roleList:roleList
   });
 };
 module.exports.roleCreate = async (req, res) => {
@@ -95,4 +107,128 @@ module.exports.roleCreatePost = async (req, res) => {
     res.json({
         code: "success"
     });
+};
+
+module.exports.roleDelete = async (req, res) => {
+  const id = req.params.id;
+
+  await Role.updateOne({ _id: id }, {
+    deleted: true,
+    deletedAt: new Date(),
+    deletedBy: req.account ? req.account.id : ""
+  });
+
+  res.json({
+    code: "success"
+  });
+};
+
+module.exports.roleChangeMulti = async (req, res) => {
+  const option = req.body.option;
+  const ids = req.body.ids;
+
+  if (option === "delete") {
+    await Role.updateMany({ _id: { $in: ids } }, {
+      deleted: true,
+      deletedAt: new Date(),
+      deletedBy: req.account ? req.account.id : ""
+    });
+  }
+
+  res.json({
+    code: "success"
+  });
+};
+
+module.exports.roleTrash = async (req, res) => {
+  const find = {
+    deleted: true
+  };
+
+  if (req.query.keyword) {
+    const keywordRegex = new RegExp(req.query.keyword, "i");
+    find.name = keywordRegex;
+  }
+
+  const roleList = await Role.find(find);
+  res.render("admin/pages/setting-role-trash", {
+    pageTitle: "Thùng rác nhóm quyền",
+    roleList: roleList
+  });
+};
+
+module.exports.roleUndo = async (req, res) => {
+  const id = req.params.id;
+  await Role.updateOne({ _id: id }, { deleted: false, deletedAt: null, deletedBy: null });
+  res.json({ code: "success" });
+};
+
+module.exports.roleDeleteDestroy = async (req, res) => {
+  const id = req.params.id;
+  await Role.deleteOne({ _id: id });
+  res.json({ code: "success" });
+};
+
+module.exports.roleTrashChangeMulti = async (req, res) => {
+  const option = req.body.option;
+  const ids = req.body.ids;
+
+  if (option === "undo") {
+    await Role.updateMany({ _id: { $in: ids } }, { deleted: false, deletedAt: null, deletedBy: null });
+  } else if (option === "delete-destroy") {
+    await Role.deleteMany({ _id: { $in: ids } });
+  }
+
+  res.json({ code: "success" });
+};
+
+module.exports.roleEdit = async (req, res) => {
+  try{
+    const id=req.params.id;
+
+  const roleDetail = await Role.findOne({
+    _id:id,
+    deleted:false
+  })
+
+  if(roleDetail){
+     res.render("admin/pages/setting-role-edit", {
+    pageTitle: "Chỉnh sửa nhóm quyền",
+    permissionList: permissionConfig.permissionList,
+    roleDetail:roleDetail
+  });
+  }else{
+        res.direct(`/${pathAdmin}/setting/role/list`);
+
+  }
+ 
+  }catch(error){
+    res.direct(`/${pathAdmin}/setting/role/list`);
+  }
+  
+};
+
+module.exports.roleEditPatch = async (req, res) => {
+  try{
+    const id=req.params.id;
+    req.body.updatedBy=req.account.id;
+
+    await Role.updateOne({
+      _id:id,
+      deleted:false
+    },req.body)
+
+    req.flash("success","Sửa nhóm quyền thành công");
+    
+    res.json({
+        code: "success"
+    });
+
+  }catch(error){
+    res.json({
+      code:"error",
+      message: "id khong ton tai"
+    })
+  }
+    
 };

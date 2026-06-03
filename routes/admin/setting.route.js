@@ -17,5 +17,17 @@ router.get("/account-admin/create", settingController.accountAdminCreate);
 router.get("/role/list", settingController.roleList);
 router.get("/role/create", settingController.roleCreate);
 router.post("/role/create", settingController.roleCreatePost);
+router.patch("/role/delete/:id", settingController.roleDelete);
+router.patch("/role/change-multi", settingController.roleChangeMulti);
+
+// Trash routes
+router.get("/role/trash", settingController.roleTrash);
+router.patch("/role/undo/:id", settingController.roleUndo);
+router.patch("/role/delete-destroy/:id", settingController.roleDeleteDestroy);
+router.patch("/role/trash/change-multi", settingController.roleTrashChangeMulti);
+
+router.get("/role/edit/:id", settingController.roleEdit);
+router.patch("/role/edit/:id", settingController.roleEditPatch);
+
 
 module.exports = router;
