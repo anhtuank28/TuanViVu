@@ -382,6 +382,81 @@ module.exports.deletePatch = async (req, res) => {
     });
   }
 };
+module.exports.deleteDestroyPatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await Tour.deleteOne({
+      _id: id
+    }, 
+    );
+
+    req.flash('success', "Xoá tour thành công");
+
+    res.json({
+      code: 'success'
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ"
+    });
+  }
+};
+module.exports.undoPatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await Tour.updateOne({
+      _id: id
+    }, {
+      deleted: false,
+    });
+
+    req.flash('success', "khôi phục thành công tour thành công");
+
+    res.json({
+      code: 'success'
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không hợp lệ"
+    });
+  }
+};
+
+module.exports.trashChangeMultiPatch = async (req, res) => {
+  try {
+    const { option, ids } = req.body;
+
+    switch (option) {
+      case "undo":
+        await Tour.updateMany({
+          _id: { $in: ids }
+        }, {
+          deleted: false
+        });
+        req.flash("success", "Khôi phục thành công");
+        break;
+      case "delete-destroy":
+        await Tour.deleteMany({
+          _id: { $in: ids }
+        });
+        req.flash("success", "Xoá thành công");
+        break;
+    }
+
+    res.json({
+      code: "success"
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không tồn tại trong hệ thống"
+    });
+  }
+};
 
 module.exports.changeMultiPatch = async (req, res) => {
   try {

@@ -16,4 +16,7 @@ router.patch("/delete/:id", tourController.deletePatch);
 router.patch("/edit/:id", upload.single("avatar"), tourValidate.createPost, tourController.editPatch);
 
 router.patch("/change-multi", tourController.changeMultiPatch);
+router.patch("/trash/change-multi", tourController.trashChangeMultiPatch);
+router.patch("/undo/:id", tourController.undoPatch);
+router.patch("/delete-destroy/:id", tourController.deleteDestroyPatch);
 module.exports = router;

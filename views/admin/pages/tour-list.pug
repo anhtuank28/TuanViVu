@@ -43,21 +43,17 @@ block main
           .inner-item
             select
               option(value="") -- Hành động --
-              if (permissions.includes("tour-edit"))
-                option(value="active") Hoạt động
-                option(value="inactive") Dừng hoạt động
-              if (permissions.includes("tour-delete"))
-                option(value="delete") Xóa
+              option(value="active") Hoạt động
+              option(value="inactive") Dừng hoạt động
+              option(value="delete") Xóa
           .inner-item
             button Áp dụng
         .inner-search
           <i class="fa-solid fa-magnifying-glass"></i>
           input(type="text" placeholder="Tìm kiếm" search)
-        if (permissions.includes("tour-create"))
-          .inner-button-create
+        .inner-button-create
             a(href=`/${pathAdmin}/tour/create`) + Tạo mới
-        if (permissions.includes("tour-trash"))
-          .inner-button-trash
+        .inner-button-trash
             a(href=`/${pathAdmin}/tour/trash`) Thùng rác
     //- End Section 5
 
