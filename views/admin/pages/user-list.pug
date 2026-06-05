@@ -72,10 +72,10 @@ block main
   //- End Section 6
 
   //- Section 7
-  .section-7
-    span(class="inner-label") Hiển thị 1 - 9 của 78
-    select(class="inner-pagination")
-      option Trang 1
-      option Trang 2
-      option Trang 3
+  if (pagination)
+    .section-7
+      span(class="inner-label") Hiển thị #{userList.length>0 ? pagination.skip + 1 :0} - #{pagination.skip + userList.length} của #{pagination.totalRecord}
+      select(class="inner-pagination" pagination)
+        - for (let i = 1; i <= pagination.totalPage; i++)
+          option(value=i selected=(i == pagination.currentPage ? true : false)) Trang #{i}
   //- End Section 7

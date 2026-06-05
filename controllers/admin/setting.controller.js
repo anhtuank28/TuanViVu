@@ -1,7 +1,8 @@
 const SettingwebsiteInfo = require("../../models/setting-website-model")
-
+const bcrypt = require("bcryptjs");
 const permissionConfig=require("../../config/permission");
 const Role = require("../../models/role.model");
+const AccountAdmin = require("../../models/account-admin.model");
 
 module.exports.list = async (req, res) => {
   res.render("admin/pages/setting-list", {
@@ -58,14 +59,131 @@ module.exports.websiteInfoPatch = async (req, res) => {
   });
 };
 module.exports.accountAdminList = async (req, res) => {
+  const accountAdminList=await AccountAdmin.find({deleted:false}).sort({createdAt:"desc"});
+  for(const item of accountAdminList){
+    if(item.role){
+      const roleInfo=await Role.findOne({
+        _id:item.role
+      });
+
+      if(roleInfo){
+        item.roleName=roleInfo.name;
+      }
+    }
+  }
   res.render("admin/pages/setting-account-admin-list", {
     pageTitle: "Tài khoản quản trị",
+    accountAdminList:accountAdminList
   });
 };
 module.exports.accountAdminCreate = async (req, res) => {
+  const roleList= await Role.find({
+    deleted: false
+  })
+
   res.render("admin/pages/setting-account-admin-create", {
     pageTitle: "Tạo tài khoản quản trị",
+    roleList:roleList
   });
+};
+module.exports.accountAdminEdit = async (req, res) => {
+ try{
+   const roleList= await Role.find({
+    deleted: false
+  })
+
+  const id=req.params.id;
+  const accountAdminDetail=await AccountAdmin.findOne({
+    _id:id,
+    deleted:false
+  })
+
+  if(!accountAdminDetail){
+    res.redirect(`/${pathAdmin}/setting/account-admin/list`);
+    return;
+  }
+  res.render("admin/pages/setting-account-admin-edit", {
+    pageTitle: "Chỉnh sửa tài khoản quản trị",
+    roleList:roleList,
+    accountAdminDetail:accountAdminDetail
+  });
+ }catch(error){
+      res.redirect(`/${pathAdmin}/setting/account-admin/list`);
+
+ }
+};
+module.exports.accountAdminCreatePost = async (req, res) => {
+  const existAccount=await AccountAdmin.findOne({
+    email:req.body.email
+  })
+
+  if(existAccount){
+    res.json({
+      code:"error",
+      message: "Email exits"
+    })
+    return;
+  }
+
+  req.body.createdBy=req.account.id;
+  req.body.updatedBy=req.account.id;
+  req.body.avatar=req.file?req.file.path:"";
+
+  const salt = await bcrypt.genSalt(10); //tạo ra chuỗi ngẫu nhiên có 10 ký tự
+     req.body.password = await bcrypt.hash(req.body.password, salt);
+
+    const newAccount= new AccountAdmin(req.body);
+    await newAccount.save();
+
+  req.flash("success","Tạo tài khoản quản trị thành công");
+  res.json({
+    code:"success"
+  })
+};
+module.exports.accountAdminEditPatch = async (req, res) => {
+  try{ 
+   const id=req.params.id;
+  
+   req.body.updatedBy=req.account.id;
+
+  const emailExist = await AccountAdmin.findOne({
+    _id: { $ne: id },
+    email: req.body.email,
+    deleted: false
+  });
+
+  if (emailExist) {
+    res.json({
+      code: "error",
+      message: "Email đã tồn tại!"
+    });
+    return;
+  }
+
+  if(req.file){
+     req.body.avatar=req.file.path;
+  }else{
+    delete req.body.avatar;
+  }
+  if(req.body.password){
+    const salt = await bcrypt.genSalt(10); //tạo ra chuỗi ngẫu nhiên có 10 ký tự
+     req.body.password = await bcrypt.hash(req.body.password, salt);
+  }
+  await AccountAdmin.updateOne({
+    _id:id,
+    deleted:false
+  },req.body)
+
+  req.flash("success","Cập nhật tài khoản quản trị thành công");
+  res.json({
+    code:"success"
+  })}
+ catch(error){
+  res.json({
+    code: "error",
+    message: "Đã có lỗi xảy ra!"
+  });
+ }
 };
 module.exports.roleList = async (req, res) => {
   const find = {

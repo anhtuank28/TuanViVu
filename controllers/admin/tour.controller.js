@@ -75,7 +75,8 @@ module.exports.list = async (req, res) => {
   const pagination = {
     skip: skip,
     totalRecord: totalRecord,
-    totalPage: totalPage
+    totalPage: totalPage,
+    currentPage: page
   };
 
   const tourList = await Tour.find(find).sort({
@@ -292,7 +293,8 @@ module.exports.trash = async (req, res) => {
   const pagination = {
     skip: skip,
     totalRecord: totalRecord,
-    totalPage: totalPage
+    totalPage: totalPage,
+    currentPage: page
   };
 
   const tourList = await Tour.find(find).sort({
@@ -322,7 +324,8 @@ module.exports.trash = async (req, res) => {
 
   res.render("admin/pages/tour-trash", {
     pageTitle: "thùng rác tour",
-    tourList:tourList
+    tourList:tourList,
+    pagination: pagination
   });
 };
 

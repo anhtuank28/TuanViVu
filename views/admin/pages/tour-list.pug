@@ -120,5 +120,5 @@ block main
       span(class="inner-label") Hiển thị #{tourList.length>0 ? pagination.skip + 1 :0} - #{pagination.skip + tourList.length} của #{pagination.totalRecord}
       select(class="inner-pagination" pagination)
         - for (let i = 1; i <= pagination.totalPage; i++)
-          option(value=i) Trang #{i}
+          option(value=i selected=(i == pagination.currentPage ? true : false)) Trang #{i}
     //- End Section 7

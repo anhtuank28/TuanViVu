@@ -68,8 +68,9 @@ module.exports.list = async (req, res) => {
   const pagination = {
     skip: skip,
     totalRecord: totalRecord,
-    totalPage: totalPage
-  }
+    totalPage: totalPage,
+    currentPage: page
+  };
 
   //hết phân trang
   const categoryList = await Category.find(find).sort({
