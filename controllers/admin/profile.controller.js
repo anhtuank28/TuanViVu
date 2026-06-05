@@ -1,4 +1,5 @@
 const AccountAdmin = require("../../models/account-admin.model");
+const bcrypt = require("bcryptjs");
 
 module.exports.edit = async (req, res) => {
 
@@ -39,4 +40,31 @@ module.exports.changePassword = async (req, res) => {
   res.render("admin/pages/profile-change-password", {
     pageTitle: "Đổi mật khẩu",
   });
+};
+module.exports.changePasswordPatch = async (req, res) => {
+  try{
+    const id=req.account.id;
+  req.body.updatedBy=id;
+
+  const salt = await bcrypt.genSalt(10); //tạo ra chuỗi ngẫu nhiên có 10 ký tự
+    req.body.password = await bcrypt.hash(req.body.password, salt);
+
+
+  await AccountAdmin.updateOne({
+    _id:id,
+    deleted:false
+  },req.body) 
+  req.flash("success","Đổi mật khẩu thành công")
+  res.json({
+    code:"success"
+  }
+  )
+  }catch(error){
+    console.error(error);
+    res.json({
+      code:"error",
+      message: "Đã có lỗi xảy ra!"
+    });
+  }
+  
 };

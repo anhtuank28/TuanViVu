@@ -801,7 +801,7 @@ if (settingAccountAdminCreateForm) {
         errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
       },
       {
-        validator: (value) => /[@$!%*?&]/.test(value),
+        validator: (value) => /[@$!%*?&#]/.test(value),
         errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
       },
     ])
@@ -912,7 +912,7 @@ if (settingAccountAdminEditForm) {
         errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
       },
       {
-        validator: (value) => value ? /[@$!%*?&]/.test(value) : true,
+        validator: (value) => value ? /[@$!%*?&#]/.test(value) : true,
         errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
       },
     ])
@@ -1185,7 +1185,7 @@ if (profileChangePasswordForm) {
         errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
       },
       {
-        validator: (value) => /[@$!%*?&]/.test(value),
+        validator: (value) => /[@$!%*?&#]/.test(value),
         errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
       },
     ])
