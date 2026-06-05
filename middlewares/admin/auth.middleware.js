@@ -1,5 +1,6 @@
 const jwt=require("jsonwebtoken");
 const AccountAdmin = require('../../models/account-admin.model');
+const Role = require("../../models/role.model");
 
 module.exports.verityToken= async (req,res,next)=>{
     try{
@@ -22,6 +23,12 @@ module.exports.verityToken= async (req,res,next)=>{
             res.redirect(`/${pathAdmin}/account/login`);
             return;
         }
+
+        const role=await Role.findOne({
+            _id: exitsAccount.role
+        })
+        exitsAccount.roleName=role.name;
+    
 
         req.account=exitsAccount;//Để gắn nick mà đang tìm được trong db vào thuộc tính account và gửi req lên controller
         res.locals.account=exitsAccount;//để trong các file pug có thể dùng được exitsAccount
