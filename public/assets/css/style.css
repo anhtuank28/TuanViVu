@@ -136,7 +136,7 @@ input, button, textarea {
   color: var(--color-dark);
 }
 
-.header .inner-menu > ul > li > ul {
+.header .inner-menu ul ul {
   display: none;
   position: absolute;
   top: 100%;
@@ -152,7 +152,33 @@ input, button, textarea {
   border: 1px solid rgba(0,0,0,0.05);
 }
 
-.header .inner-menu > ul > li:hover > ul {
+.header .inner-menu ul ul ul {
+  top: 0;
+  left: 100%;
+  margin-top: 0;
+}
+
+.header .inner-menu > ul > li > ul::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  background: transparent;
+}
+
+.header .inner-menu ul ul ul::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -15px;
+  width: 15px;
+  height: 100%;
+  background: transparent;
+}
+
+.header .inner-menu ul li:hover > ul {
   display: block;
   animation: fadeIn 0.2s ease-in-out;
 }
@@ -162,15 +188,21 @@ input, button, textarea {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.header .inner-menu > ul > li > ul > li > a {
-  display: block;
+.header .inner-menu ul ul li {
+  position: relative;
+}
+
+.header .inner-menu ul ul li > a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 20px;
   color: var(--color-dark);
   font-size: 14px;
   font-weight: 400;
 }
 
-.header .inner-menu > ul > li > ul > li > a:hover {
+.header .inner-menu ul ul li > a:hover {
   color: var(--color-primary);
   background-color: #f1f5f9;
 }

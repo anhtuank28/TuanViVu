@@ -4,9 +4,10 @@ const homeRoutes = require("./home.route");
 const cartRoutes = require("./cart.route");
 
 const settingMiddleWare=require("../../middlewares/client/setting.middleware");
-
+const categoryMiddleWare=require("../../middlewares/client/category.middleware");
 
 router.use(settingMiddleWare.websiteInfo)
+router.use(categoryMiddleWare.list)
 
 router.use("/tours", tourRoutes);
 router.use("/", homeRoutes);
