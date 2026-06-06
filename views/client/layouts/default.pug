@@ -7,6 +7,8 @@ html(lang="vi")
       name="viewport"
       )
     title #{pageTitle}
+    if settingWebsiteInfo && settingWebsiteInfo.favicon
+      link(rel="icon" href=settingWebsiteInfo.favicon type="image/x-icon")
     meta(name="description" content="TuanVivu - Khám phá thế giới qua những chuyến đi")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)

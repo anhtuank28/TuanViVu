@@ -30,8 +30,12 @@ module.exports.verityToken= async (req,res,next)=>{
         exitsAccount.roleName=role.name;
     
 
+        const SettingwebsiteInfo = require('../../models/setting-website-model');
+        const settingWebsiteInfo = await SettingwebsiteInfo.findOne({});
+
         req.account=exitsAccount;//Để gắn nick mà đang tìm được trong db vào thuộc tính account và gửi req lên controller
         res.locals.account=exitsAccount;//để trong các file pug có thể dùng được exitsAccount
+        res.locals.settingWebsiteInfo = settingWebsiteInfo;
         
         res.locals.permissions=role.permissions;
         

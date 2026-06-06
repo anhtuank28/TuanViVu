@@ -7,7 +7,13 @@ const schema = new mongoose.Schema(
         email: String,
         address: String,
         logo: String,
-        favicon: String
+        favicon: String,
+        footerDescription: String,
+        facebook: String,
+        instagram: String,
+        twitter: String,
+        youtube: String,
+        copyright: String
     }
 );
 

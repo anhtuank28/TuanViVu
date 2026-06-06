@@ -19,9 +19,11 @@ router.get("/account-admin/create", authMiddleware.requireAuth("account-create")
 router.post("/account-admin/create", authMiddleware.requireAuth("account-create"), upload.single("avatar"), settingController.accountAdminCreatePost);
 router.get("/account-admin/edit/:id", authMiddleware.requireAuth("account-edit"), settingController.accountAdminEdit);
 
+const roleValidate = require("../../validates/admin/role.validate");
+
 router.get("/role/list", authMiddleware.requireAuth("role-view"), settingController.roleList);
 router.get("/role/create", authMiddleware.requireAuth("role-create"), settingController.roleCreate);
-router.post("/role/create", authMiddleware.requireAuth("role-create"), settingController.roleCreatePost);
+router.post("/role/create", authMiddleware.requireAuth("role-create"), roleValidate.createPost, settingController.roleCreatePost);
 router.patch("/account-admin/edit/:id", authMiddleware.requireAuth("account-edit"), upload.single("avatar"), settingController.accountAdminEditPatch);
 
 router.patch("/role/delete/:id", authMiddleware.requireAuth("role-delete"), settingController.roleDelete);
@@ -34,7 +36,7 @@ router.patch("/role/delete-destroy/:id", authMiddleware.requireAuth("role-delete
 router.patch("/role/trash/change-multi", authMiddleware.requireAuth("role-delete"), settingController.roleTrashChangeMulti);
 
 router.get("/role/edit/:id", authMiddleware.requireAuth("role-edit"), settingController.roleEdit);
-router.patch("/role/edit/:id", authMiddleware.requireAuth("role-edit"), settingController.roleEditPatch);
+router.patch("/role/edit/:id", authMiddleware.requireAuth("role-edit"), roleValidate.createPost, settingController.roleEditPatch);
 
 
 module.exports = router;

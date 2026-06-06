@@ -702,6 +702,13 @@ if (settingWebsiteInfoForm) {
         }
       }
 
+      const footerDescription = event.target.footerDescription.value;
+      const facebook = event.target.facebook.value;
+      const instagram = event.target.instagram.value;
+      const twitter = event.target.twitter.value;
+      const youtube = event.target.youtube.value;
+      const copyright = event.target.copyright.value;
+
       // Tạo FormData
       const formData = new FormData();
       formData.append("websiteName", websiteName);
@@ -710,6 +717,12 @@ if (settingWebsiteInfoForm) {
       formData.append("address", address);
       formData.append("logo", logo);
       formData.append("favicon", favicon);
+      formData.append("footerDescription", footerDescription);
+      formData.append("facebook", facebook);
+      formData.append("instagram", instagram);
+      formData.append("twitter", twitter);
+      formData.append("youtube", youtube);
+      formData.append("copyright", copyright);
 
       fetch(`/${pathAdmin}/setting/website-info`, {
         method: "PATCH",

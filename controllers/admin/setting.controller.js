@@ -14,12 +14,18 @@ module.exports.websiteInfo = async (req, res) => {
 
   if (!settingWebsiteInfo) {
     settingWebsiteInfo = {
-      websiteName: "",
+      websiteName: "TuanViVu",
       phone: "",
       email: "",
       address: "",
       logo: "",
-      favicon: ""
+      favicon: "",
+      footerDescription: "Khám phá thế giới qua những chuyến đi tuyệt vời cùng TuanVivu. Chúng tôi mang đến những trải nghiệm du lịch đẳng cấp và an toàn.",
+      facebook: "https://www.facebook.com/anh.tuan.246083?mibextid=wwXIfr&mibextid=wwXIfr",
+      instagram: "",
+      twitter: "",
+      youtube: "",
+      copyright: "© 2024 TuanVivu. All rights reserved."
     };
   }
 

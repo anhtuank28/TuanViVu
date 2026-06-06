@@ -4,13 +4,13 @@
     li
       a(
         target="_blank" 
-        href="https://www.facebook.com/anh.tuan.246083?mibextid=wwXIfr&mibextid=wwXIfr"
+        href=(settingWebsiteInfo.facebook ? settingWebsiteInfo.facebook : "#")
         )
         i.fa-brands.fa-facebook-f
     li
       a(
         target="_blank" 
-        href="#"
+        href=(settingWebsiteInfo.instagram ? settingWebsiteInfo.instagram : "#")
         )
         i.fa-brands.fa-instagram
     li
@@ -22,7 +22,7 @@
     li
       a(
         target="_blank" 
-        href="#"
+        href=(settingWebsiteInfo.youtube ? settingWebsiteInfo.youtube : "#")
         )
         i.fa-brands.fa-youtube
 // End Box Contact
