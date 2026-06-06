@@ -24,15 +24,16 @@ block main
   //- Section 5
   .section-5
     .inner-wrap
-      .inner-change-status
-        .inner-item
-          select
-            option(value="") -- Hành động --
-            option(value="") Hoạt động
-            option(value="") Dừng hoạt động
-            option(value="") Xóa
-        .inner-item
-          button Áp dụng
+      if(permissions.includes('user-edit') || permissions.includes('user-delete'))
+        .inner-change-status
+          .inner-item
+            select
+              option(value="") -- Hành động --
+              option(value="") Hoạt động
+              option(value="") Dừng hoạt động
+              option(value="") Xóa
+          .inner-item
+            button Áp dụng
       .inner-search
         <i class="fa-solid fa-magnifying-glass"></i>
         input(type="text" placeholder="Tìm kiếm")
@@ -52,7 +53,8 @@ block main
             th Số điện thoại
             th Địa chỉ
             th Trạng thái
-            th Hành động
+            if(permissions.includes('user-edit') || permissions.includes('user-delete'))
+              th Hành động
         tbody
           tr
             td(class="inner-center")
@@ -65,10 +67,13 @@ block main
             td Số 123, đường ABC,...
             td
               .badge.badge-green Hoạt động
-            td
-              .inner-buttons
-                button(class="inner-edit") <i class="fa-regular fa-pen-to-square"></i>
-                button(class="inner-delete") <i class="fa-regular fa-trash-can"></i>
+            if(permissions.includes('user-edit') || permissions.includes('user-delete'))
+              td
+                .inner-buttons
+                  if(permissions.includes('user-edit'))
+                    button(class="inner-edit") <i class="fa-regular fa-pen-to-square"></i>
+                  if(permissions.includes('user-delete'))
+                    button(class="inner-delete") <i class="fa-regular fa-trash-can"></i>
   //- End Section 6
 
   //- Section 7

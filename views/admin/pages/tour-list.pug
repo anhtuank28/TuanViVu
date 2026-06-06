@@ -36,25 +36,28 @@ block main
     //- Section 5
     .section-5
       .inner-wrap
-        .inner-change-status(
-          change-multi
-          data-api=`/${pathAdmin}/tour/change-multi`
-        )
-          .inner-item
-            select
-              option(value="") -- Hành động --
-              option(value="active") Hoạt động
-              option(value="inactive") Dừng hoạt động
-              option(value="delete") Xóa
-          .inner-item
-            button Áp dụng
+        if(permissions.includes('tour-edit'))
+          .inner-change-status(
+            change-multi
+            data-api=`/${pathAdmin}/tour/change-multi`
+          )
+            .inner-item
+              select
+                option(value="") -- Hành động --
+                option(value="active") Hoạt động
+                option(value="inactive") Dừng hoạt động
+                option(value="delete") Xóa
+            .inner-item
+              button Áp dụng
         .inner-search
           <i class="fa-solid fa-magnifying-glass"></i>
           input(type="text" placeholder="Tìm kiếm" search)
-        .inner-button-create
-            a(href=`/${pathAdmin}/tour/create`) + Tạo mới
-        .inner-button-trash
-            a(href=`/${pathAdmin}/tour/trash`) Thùng rác
+        if(permissions.includes('tour-create'))
+          .inner-button-create
+              a(href=`/${pathAdmin}/tour/create`) + Tạo mới
+        if(permissions.includes('tour-delete'))
+          .inner-button-trash
+              a(href=`/${pathAdmin}/tour/trash`) Thùng rác
     //- End Section 5
 
     //- Section 6
@@ -73,7 +76,8 @@ block main
               th(class="inner-center") Trạng thái
               th Tạo bởi
               th Cập nhật bởi
-              th Hành động
+              if (permissions.includes('tour-edit') || permissions.includes('tour-delete'))
+                th Hành động
           tbody
             each item in tourList
               tr
@@ -102,17 +106,20 @@ block main
                 td
                   div #{item.updatedByFullName}
                   div.inner-time #{item.updatedAtFormat}
-                td
-                  .inner-buttons
-                      a(
-                        href=`/${pathAdmin}/tour/edit/${item.id}`
-                        class="inner-edit"
-                      ) <i class="fa-regular fa-pen-to-square"></i>
-                      button(
-                        class="inner-delete"
-                        button-delete
-                        data-api=`/${pathAdmin}/tour/delete/${item.id}`
-                      ) <i class="fa-regular fa-trash-can"></i>
+                if (permissions.includes('tour-edit') || permissions.includes('tour-delete'))
+                  td
+                    .inner-buttons
+                        if(permissions.includes('tour-edit'))
+                          a(
+                            href=`/${pathAdmin}/tour/edit/${item.id}`
+                            class="inner-edit"
+                          ) <i class="fa-regular fa-pen-to-square"></i>
+                        if(permissions.includes('tour-delete'))
+                          button(
+                            class="inner-delete"
+                            button-delete
+                            data-api=`/${pathAdmin}/tour/delete/${item.id}`
+                          ) <i class="fa-regular fa-trash-can"></i>
     //- End Section 6
 
     //- Section 7`

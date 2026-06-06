@@ -53,7 +53,8 @@ block main
             th Thanh toán
             th Trạng thái
             th(class="inner-center") Ngày đặt
-            th Hành động
+            if (permissions.includes('order-edit') || permissions.includes('order-delete'))
+              th Hành động
         tbody
           each orderDetail in orderList
             tr
@@ -90,13 +91,16 @@ block main
               td(class="inner-center")
                 div #{orderDetail.createdAtTime}
                 div #{orderDetail.createdAtDate}
-              td
-                .inner-buttons
-                  a(
-                    href=`/${pathAdmin}/order/edit/${orderDetail.id}`
-                    class="inner-edit"
-                  ) <i class="fa-regular fa-pen-to-square"></i>
-                  button(class="inner-delete") <i class="fa-regular fa-trash-can"></i>
+              if (permissions.includes('order-edit') || permissions.includes('order-delete'))
+                td
+                  .inner-buttons
+                    if(permissions.includes('order-edit'))
+                      a(
+                        href=`/${pathAdmin}/order/edit/${orderDetail.id}`
+                        class="inner-edit"
+                      ) <i class="fa-regular fa-pen-to-square"></i>
+                    if(permissions.includes('order-delete'))
+                      button(class="inner-delete") <i class="fa-regular fa-trash-can"></i>
   //- End Section 6
 
   //- Section 7

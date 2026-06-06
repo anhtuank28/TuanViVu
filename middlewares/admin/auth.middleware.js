@@ -32,7 +32,8 @@ module.exports.verityToken= async (req,res,next)=>{
 
         req.account=exitsAccount;//Để gắn nick mà đang tìm được trong db vào thuộc tính account và gửi req lên controller
         res.locals.account=exitsAccount;//để trong các file pug có thể dùng được exitsAccount
-            
+        
+        res.locals.permissions=role.permissions;
         
         next();
     }catch(error){
@@ -40,3 +41,18 @@ module.exports.verityToken= async (req,res,next)=>{
         res.redirect(`/${pathAdmin}/account/login`);
     }
 }
+
+module.exports.requireAuth = (permission) => {
+    return (req, res, next) => {
+        if (!res.locals.permissions) {
+            res.send(`<script>alert("Bạn không có quyền truy cập trang này!"); window.history.back();</script>`);
+            return;
+        }
+
+        if (res.locals.permissions.includes(permission)) {
+            next();
+        } else {
+            res.send(`<script>alert("Bạn không có quyền truy cập trang này!"); window.history.back();</script>`);
+        }
+    };
+};

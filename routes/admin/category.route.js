@@ -9,11 +9,13 @@ const categoryValidate = require("../../validates/admin/category.validate")
 const upload = multer({ storage: cloudinaryHelper.storage });
 
 
-router.get("/list", categoryController.list);
-router.get("/create", categoryController.create);
-router.post("/create", upload.single("avatar"), categoryValidate.createPost, categoryController.createPost);
-router.get("/edit/:id", categoryController.edit)
-router.patch("/edit/:id", upload.single("avatar"), categoryValidate.createPost, categoryController.editPatch)
-router.patch("/delete/:id", categoryController.deletePatch)
-router.patch("/change-multi", categoryController.changeMultiPatch)
+const authMiddleware = require("../../middlewares/admin/auth.middleware");
+
+router.get("/list", authMiddleware.requireAuth("category-view"), categoryController.list);
+router.get("/create", authMiddleware.requireAuth("category-create"), categoryController.create);
+router.post("/create", authMiddleware.requireAuth("category-create"), upload.single("avatar"), categoryValidate.createPost, categoryController.createPost);
+router.get("/edit/:id", authMiddleware.requireAuth("category-edit"), categoryController.edit)
+router.patch("/edit/:id", authMiddleware.requireAuth("category-edit"), upload.single("avatar"), categoryValidate.createPost, categoryController.editPatch)
+router.patch("/delete/:id", authMiddleware.requireAuth("category-delete"), categoryController.deletePatch)
+router.patch("/change-multi", authMiddleware.requireAuth("category-edit"), categoryController.changeMultiPatch)
 module.exports = router;
