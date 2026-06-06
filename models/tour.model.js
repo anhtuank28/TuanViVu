@@ -31,6 +31,10 @@ const schema = new mongoose.Schema(
             slug: "name",
             unique: true
         },
+        isFeatured: {
+            type: Boolean,
+            default: false
+        },
         deleted: {
             type: Boolean,
             default: false

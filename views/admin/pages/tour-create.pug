@@ -22,6 +22,11 @@ block main
           select(id="status" name="status")
             option(value="active") Hoạt động
             option(value="inactive") Tạm dừng
+        .inner-group
+          label(class="inner-label" for="isFeatured") Hiển thị trang chủ
+          select(id="isFeatured" name="isFeatured")
+            option(value="false") Không
+            option(value="true") Có
         .inner-group.inner-two-col
           label(class="inner-label" for="avatar") Ảnh đại diện
           div(class="inner-upload-image")

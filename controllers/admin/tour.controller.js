@@ -80,7 +80,7 @@ module.exports.list = async (req, res) => {
   };
 
   const tourList = await Tour.find(find).sort({
-    position: "desc"
+    position: "asc"
   }).limit(limitItems).skip(skip);
 
   for (const item of tourList) {
@@ -159,6 +159,7 @@ module.exports.createPost = async (req, res) => {
   req.body.locations = Array.isArray(req.body.locations) ? req.body.locations : (req.body.locations ? JSON.parse(req.body.locations) : []);
   req.body.departureDate = req.body.departureDate ? new Date(req.body.departureDate) : null;
   req.body.schedules = Array.isArray(req.body.schedules) ? req.body.schedules : (req.body.schedules ? JSON.parse(req.body.schedules) : []);
+  req.body.isFeatured = req.body.isFeatured === "true";
 
 
   const newRecord = new Tour(req.body);
@@ -203,6 +204,7 @@ module.exports.editPatch = async (req, res) => {
   req.body.locations = Array.isArray(req.body.locations) ? req.body.locations : (req.body.locations ? JSON.parse(req.body.locations) : []);
   req.body.departureDate = req.body.departureDate ? new Date(req.body.departureDate) : null;
   req.body.schedules = Array.isArray(req.body.schedules) ? req.body.schedules : (req.body.schedules ? JSON.parse(req.body.schedules) : []);
+  req.body.isFeatured = req.body.isFeatured === "true";
 
     await Tour.updateOne({
       _id:id,
@@ -474,6 +476,16 @@ module.exports.changeMultiPatch = async (req, res) => {
           status: option
         });
         req.flash("success", "Đổi trạng thái thành công");
+        break;
+      case "featured-true":
+      case "featured-false":
+        const isFeatured = option === "featured-true";
+        await Tour.updateMany({
+          _id: { $in: ids }
+        }, {
+          isFeatured: isFeatured
+        });
+        req.flash("success", "Cập nhật hiển thị nổi bật thành công");
         break;
       case "delete":
         await Tour.updateMany({

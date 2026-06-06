@@ -31,6 +31,17 @@ block main
               value="inactive"
               selected=(tourDetail.status == "inactive" ? true : false)
             ) Tạm dừng
+        .inner-group
+          label(class="inner-label" for="isFeatured") Hiển thị trang chủ
+          select(id="isFeatured" name="isFeatured")
+            option(
+              value="false"
+              selected=(tourDetail.isFeatured == false ? true : false)
+            ) Không
+            option(
+              value="true"
+              selected=(tourDetail.isFeatured == true ? true : false)
+            ) Có
         .inner-group.inner-two-col
           label(class="inner-label" for="avatar") Ảnh đại diện
           div(class="inner-upload-image" image-default=tourDetail.avatar)

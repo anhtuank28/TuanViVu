@@ -46,6 +46,8 @@ block main
                 option(value="") -- Hành động --
                 option(value="active") Hoạt động
                 option(value="inactive") Dừng hoạt động
+                option(value="featured-true") Nổi bật: Có
+                option(value="featured-false") Nổi bật: Không
                 option(value="delete") Xóa
             .inner-item
               button Áp dụng
@@ -74,6 +76,7 @@ block main
               th Còn lại
               th(class="inner-center") Vị trí
               th(class="inner-center") Trạng thái
+              th(class="inner-center") Nổi bật
               th Tạo bởi
               th Cập nhật bởi
               if (permissions.includes('tour-edit') || permissions.includes('tour-delete'))
@@ -100,6 +103,11 @@ block main
                     .badge.badge-green Hoạt động
                   else if (item.status == "inactive")
                     .badge.badge-red Tạm dừng
+                td(class="inner-center")
+                  if (item.isFeatured)
+                    .badge.badge-green Có
+                  else
+                    .badge.badge-red Không
                 td
                   div #{item.createdByFullName}
                   div.inner-time #{item.createdAtFormat}
