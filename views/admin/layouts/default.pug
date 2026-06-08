@@ -17,8 +17,21 @@ html
   body
 
     - if (messages.success)
-      div(class="alert alert-success" alert-time="3000")
-        span #{messages.success}
+      div(class="alert alert-success" alert-time="5000")
+        div(class="alert-icon")
+          i.fa-solid.fa-check
+        div(class="alert-content")
+          span #{messages.success}
+        div(class="alert-close")
+          i.fa-solid.fa-xmark
+    - if (messages.error)
+      div(class="alert alert-error" alert-time="5000")
+        div(class="alert-icon")
+          i.fa-solid.fa-exclamation
+        div(class="alert-content")
+          span #{messages.error}
+        div(class="alert-close")
+          i.fa-solid.fa-xmark
     
     //- Header
     include ../partials/header.pug

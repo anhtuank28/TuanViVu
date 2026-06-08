@@ -1279,13 +1279,35 @@ if (buttonLogout) {
 // End Logout
 
 // Alert
-const alertTime = document.querySelector("[alert-time]");
-if (alertTime) {
-  let time = alertTime.getAttribute("alert-time");
-  time = time ? parseInt(time) : 4000;
-  setTimeout(() => {
-    alertTime.remove(); // Xóa phần tử khỏi giao diện
-  }, time);
+const alertElements = document.querySelectorAll("[alert-time]");
+if(alertElements.length > 0) {
+  alertElements.forEach(alertElement => {
+    let time = alertElement.getAttribute("alert-time");
+    time = time ? parseInt(time) : 5000;
+    
+    // Animate in
+    setTimeout(() => {
+      alertElement.classList.add("show");
+    }, 100);
+
+    // Auto animate out and remove
+    const timeoutId = setTimeout(() => {
+      alertElement.classList.remove("show");
+      alertElement.classList.add("hide");
+      setTimeout(() => alertElement.remove(), 500);
+    }, time);
+
+    // Close button click
+    const closeBtn = alertElement.querySelector(".alert-close");
+    if(closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        clearTimeout(timeoutId);
+        alertElement.classList.remove("show");
+        alertElement.classList.add("hide");
+        setTimeout(() => alertElement.remove(), 500);
+      });
+    }
+  });
 }
 // End Alert
 
