@@ -123,7 +123,7 @@ module.exports.create = async (req, res) => {
 
   const categoryTree = categoryHelper.buildCategoryTree(categoryList);
 
-  const cityList = await City.find({});
+  const cityList = await City.find({ deleted: false });
 
   res.render("admin/pages/tour-create", {
     pageTitle: "tạo tour",
@@ -347,7 +347,7 @@ module.exports.edit = async (req, res) => {
       });
       const categoryTree = categoryHelper.buildCategoryTree(categoryList);
 
-      const cityList = await City.find({});
+      const cityList = await City.find({ deleted: false });
       res.render("admin/pages/tour-edit", {
         pageTitle: "Chỉnh sửa tour",
         categoryList: categoryTree,

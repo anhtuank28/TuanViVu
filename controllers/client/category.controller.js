@@ -84,6 +84,10 @@ module.exports.list=async (req,res)=>{
         status: "active"
     };
 
+    if (req.query.locationFrom) {
+        find.locationFrom = req.query.locationFrom;
+    }
+
     if (req.query.locationTo) {
         const locationRegex = new RegExp(req.query.locationTo, "i");
         find.$or = [
@@ -133,7 +137,10 @@ module.exports.list=async (req,res)=>{
         }
     });
 
-    const cityList = await City.find({});
+    const cityList = await City.find({
+        deleted: false,
+        status: "active"
+    });
 
     // Lấy danh sách các điểm đến (locations) duy nhất của các tour trong danh mục này
     const destinationList = await Tour.distinct("locations", {

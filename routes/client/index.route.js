@@ -14,7 +14,7 @@ router.use(settingMiddleWare.websiteInfo)
 router.use(categoryMiddleWare.list)
 router.use("/", homeRoutes);
 
-router.use("/tours", tourRoutes);
+router.use("/tour", tourRoutes);
 router.use("/cart", cartRoutes);
 router.use("/cart", cartRoutes);
 router.use("/contact", contactRouters);

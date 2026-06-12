@@ -20,6 +20,10 @@ module.exports.list = async (req, res) => {
             find.name = keywordRegex;
         }
 
+        if (req.query.locationFrom) {
+            find.locationFrom = req.query.locationFrom;
+        }
+
         if (req.query.locationTo) {
             const locationRegex = new RegExp(req.query.locationTo, "i");
             find.$or = [
@@ -68,7 +72,10 @@ module.exports.list = async (req, res) => {
             ]
         };
 
-        const cityList = await City.find({});
+        const cityList = await City.find({
+            deleted: false,
+            status: "active"
+        });
         const destinationList = await Tour.distinct("locations", {
             deleted: false,
             status: "active"

@@ -40,10 +40,13 @@ block main
           .box-tour-schedule
             .inner-title-main Lịch Trình Tour
             .inner-list
-              each item in tourDetail.schedules
-                .inner-item
-                  .inner-title #{item.title}
-                  .inner-content !{item.description}
+              if tourDetail.schedules && tourDetail.schedules.length > 0
+                each item in tourDetail.schedules
+                  .inner-item
+                    .inner-title #{item.title}
+                    .inner-content !{item.description}
+              else
+                p Lịch trình đang được cập nhật...
         .inner-right
           .box-tour-detail
             .inner-title-main Chuyến Đi Của Bạn
@@ -82,9 +85,11 @@ block main
                 span.inner-highlight #{tourDetail.departureDateFormat}
             .inner-form
               label.inner-label Khởi Hành Tại:
-              select(location-from)
-                each item in cityList
-                  option(value=item.id) #{item.name}
+              select(location-from disabled)
+                if departureCity
+                  option(value=departureCity.id selected) #{departureCity.name}
+                else
+                  option(value="") Không xác định
             .inner-quantity
               label.inner-label Số Lượng Hành Khách
               .inner-list
@@ -102,7 +107,7 @@ block main
                   .inner-item-price
                     span(stock-adult) 1
                     span x
-                    span.inner-highlight #{tourDetail.priceNewAdult.toLocaleString("vi-VN")}
+                    span.inner-highlight #{(tourDetail.priceNewAdult || 0).toLocaleString("vi-VN")}
                 .inner-item
                   .inner-item-label Trẻ em:
                   .inner-item-input
@@ -117,7 +122,7 @@ block main
                   .inner-item-price
                     span(stock-children) 0
                     span x
-                    span.inner-highlight #{tourDetail.priceNewChildren.toLocaleString("vi-VN")}
+                    span.inner-highlight #{(tourDetail.priceNewChildren || 0).toLocaleString("vi-VN")}
                 .inner-item
                   .inner-item-label Em bé:
                   .inner-item-input
@@ -132,11 +137,11 @@ block main
                   .inner-item-price
                     span(stock-baby) 0
                     span x
-                    span.inner-highlight #{tourDetail.priceNewBaby.toLocaleString("vi-VN")}
+                    span.inner-highlight #{(tourDetail.priceNewBaby || 0).toLocaleString("vi-VN")}
             .inner-total
               .inner-total-label Tổng cộng:
               .inner-total-price
-                span(total-price) #{tourDetail.priceNewAdult.toLocaleString("vi-VN")}
+                span(total-price) #{(tourDetail.priceNewAdult || 0).toLocaleString("vi-VN")}
                 span đ
             button.inner-button-add-cart(tour-id=tourDetail.id) Thêm Vào Giỏ Hàng
   // End Section 10

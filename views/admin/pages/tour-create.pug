@@ -72,6 +72,12 @@ block main
               label Em bé
               input(type="number" name="stockBaby")
         .inner-group
+          label(class="inner-label") Điểm khởi hành
+          select(name="locationFrom")
+            option(value="") -- Chọn điểm khởi hành --
+            each item in cityList
+              option(value=item.id) #{item.name}
+        .inner-group
           label(class="inner-label") Những địa điểm có tour
           .inner-checkbox-list
             each item in cityList
