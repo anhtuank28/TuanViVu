@@ -94,10 +94,15 @@ block main
                 input(
                   type="checkbox" 
                   name="locations" 
-                  value=item.id
-                  checked=tourDetail.locations.includes(item.id)
+                  value=item.name
+                  checked=(tourDetail.locations || []).includes(item.name)
                 )
                 label #{item.name}
+        .inner-group
+          - const predefinedCityNames = cityList.map(c => c.name)
+          - const customLocations = (tourDetail.locations || []).filter(loc => !predefinedCityNames.includes(loc)).join(', ')
+          label(class="inner-label") Địa điểm khác (cách nhau bởi dấu phẩy)
+          input(type="text" name="customLocations" value=customLocations placeholder="VD: Singapore, Malaysia")
         .inner-group
           label(class="inner-label" for="time") Thời gian
           input(type="text" id="time" name="time" value=tourDetail.time)

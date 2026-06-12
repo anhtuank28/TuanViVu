@@ -90,9 +90,9 @@ block main
                 td
                   img(src=item.avatar class="inner-avatar")
                 td
-                  div NL: #{item.priceNewAdult.toLocaleString("vi-VN")}đ
-                  div TE: #{item.priceNewChildren.toLocaleString("vi-VN")}đ
-                  div EB: #{item.priceNewBaby.toLocaleString("vi-VN")}đ
+                  div NL: #{(item.priceNewAdult || 0).toLocaleString("vi-VN")}đ
+                  div TE: #{(item.priceNewChildren || 0).toLocaleString("vi-VN")}đ
+                  div EB: #{(item.priceNewBaby || 0).toLocaleString("vi-VN")}đ
                 td
                   div NL: #{item.stockAdult}
                   div TE: #{item.stockChildren}

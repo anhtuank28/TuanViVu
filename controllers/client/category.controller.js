@@ -78,12 +78,52 @@ module.exports.list=async (req,res)=>{
     let limit = 6; // Display 6 tours per page
     let skip = (page - 1) * limit;
 
-    // Lấy danh sách các Tour thuộc danh mục này
-    const tourList = await Tour.find({
+    const find = {
         category: category.id,
         deleted: false,
         status: "active"
-    })
+    };
+
+    if (req.query.locationTo) {
+        const locationRegex = new RegExp(req.query.locationTo, "i");
+        find.$or = [
+            { name: locationRegex },
+            { locations: locationRegex }
+        ];
+    }
+
+    if (req.query.departureDate) {
+        const date = new Date(req.query.departureDate);
+        const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+        find.departureDate = {
+            $gte: startOfDay,
+            $lte: endOfDay
+        };
+    }
+
+    if (req.query.price) {
+        const [min, max] = req.query.price.split("-");
+        if(min && max) {
+            find.priceNewAdult = {
+                $gte: parseInt(min),
+                $lte: parseInt(max)
+            };
+        }
+    }
+
+    if (req.query.stockAdult && parseInt(req.query.stockAdult) > 0) {
+        find.stockAdult = { $gte: parseInt(req.query.stockAdult) };
+    }
+    if (req.query.stockChildren && parseInt(req.query.stockChildren) > 0) {
+        find.stockChildren = { $gte: parseInt(req.query.stockChildren) };
+    }
+    if (req.query.stockBaby && parseInt(req.query.stockBaby) > 0) {
+        find.stockBaby = { $gte: parseInt(req.query.stockBaby) };
+    }
+
+    // Lấy danh sách các Tour thuộc danh mục này
+    const tourList = await Tour.find(find)
     .skip(skip)
     .limit(limit);
     
@@ -102,11 +142,7 @@ module.exports.list=async (req,res)=>{
         status: "active"
     });
 
-    const totalTour = await Tour.countDocuments({
-        category: category.id,
-        deleted: false,
-        status: "active"
-    });
+    const totalTour = await Tour.countDocuments(find);
 
     const totalPages = Math.ceil(totalTour / limit);
 

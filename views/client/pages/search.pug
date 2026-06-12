@@ -2,22 +2,34 @@ extends ../layouts/default.pug
 include ../mixins/box-breadcrumb.pug
 include ../mixins/product-item.pug
 
+block head
+  link(rel="stylesheet" href="/assets/css/search.css")
+
 block main
   // Breadcrumb
   +box-breadcrumb(breadcrumb)
   // End Breadcrumb
 
-  // Section 9
-  .section-9
+  // Section 9 - Search Results
+  .section-9.search-section
     .container
       .inner-wrap
         .inner-left
           // Box Filter
           .box-filter
             .inner-head
-              .inner-title Bộ Lọc
+              .inner-title Tìm Kiếm & Bộ Lọc
               i.fa-solid.fa-filter
             .inner-body
+              .inner-group
+                .inner-label Từ khoá
+                input.search-input(
+                  style="width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px; outline: none; font-size: 14px; margin-bottom: 5px; color: #333;"
+                  type="text" 
+                  name="keyword" 
+                  value=keyword 
+                  placeholder="Nhập tên tour bạn muốn tìm..."
+                )
               .inner-group
                 .inner-label Điểm đi
                 select(name="locationFrom")
@@ -71,10 +83,15 @@ block main
           .inner-overlay
           // End Box Filter
         .inner-right
-          .inner-info
-            h2.inner-title #{category.name}
+          .inner-info.search-header
+            if keyword
+              h2.inner-title Kết quả tìm kiếm cho: 
+                span.text-highlight "#{keyword}"
+            else
+              h2.inner-title Khám phá tất cả các Tour
             .inner-desc
-              | !{category.description}
+              | Chúng tôi tìm thấy <b>#{totalTour}</b> tour phù hợp với yêu cầu của bạn.
+          
           .inner-info-2
             .inner-sort
               .inner-label Sắp xếp:
@@ -88,23 +105,29 @@ block main
                 button.active
                   | Khuyến Mại Hot
                   i.fa-solid.fa-tag
-                button
-                  | Xem Nhiều
-                  i.fa-solid.fa-eye
             .inner-count-record
               | Tất cả: 
               b #{totalTour} Tour
             button.inner-filter-mobile
               span.inner-title Bộ Lọc
               i.fa-solid.fa-filter
+
           .inner-list-tour
             if (tourList && tourList.length > 0)
               each item in tourList
-                // Product Item
                 +product-item(item)
-                // End Product Item
             else 
-              p Không có tour nào trong danh mục này.
+              .empty-search
+                .empty-icon
+                  i.fa-solid.fa-magnifying-glass-location
+                h3 Rất tiếc, không tìm thấy tour nào!
+                p Có vẻ như chúng tôi không có tour nào khớp với từ khoá 
+                  if keyword
+                    b "#{keyword}"
+                  |  của bạn.
+                p Hãy thử thay đổi từ khoá hoặc xoá bộ lọc.
+                a.btn-back-home(href="/") Quay lại trang chủ
+
           // Pagination
           if totalPages > 1
             .box-pagination
@@ -117,4 +140,5 @@ block main
                 button(onclick=`const u = new URL(window.location.href); u.searchParams.set('page', ${page + 1}); window.location.href = u.href;`)
                   i.fa-solid.fa-angles-right
           // End Pagination
-  // End Section 9
+
+

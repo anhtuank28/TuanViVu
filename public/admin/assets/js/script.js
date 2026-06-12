@@ -398,6 +398,11 @@ if (tourCreateForm) {
       listElementLocation.forEach(input => {
         locations.push(input.value);
       });
+      const customLocations = tourCreateForm.querySelector('input[name="customLocations"]').value;
+      if (customLocations) {
+        const customArr = customLocations.split(',').map(item => item.trim()).filter(item => item !== "");
+        locations.push(...customArr);
+      }
       // End locations
 
       // schedules
@@ -516,6 +521,11 @@ if (tourEditForm) {
       listElementLocation.forEach(input => {
         locations.push(input.value);
       });
+      const customLocations = tourEditForm.querySelector('input[name="customLocations"]').value;
+      if (customLocations) {
+        const customArr = customLocations.split(',').map(item => item.trim()).filter(item => item !== "");
+        locations.push(...customArr);
+      }
       // End locations
 
       // schedules

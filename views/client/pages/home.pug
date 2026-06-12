@@ -68,34 +68,16 @@ block main
                   .inner-item-content
                     .inner-item-title Singapore
                     .inner-item-desc 50 tours
-          .inner-box.inner-user
+          .inner-box.inner-price
             .inner-input-group
-              img.inner-icon(src="/assets/images/icon-user.svg")
-              input.inner-input(
-                placeholder="Số lượng" 
-                type="text"
-                readonly
-                )
+              i.fa-solid.fa-coins(style="font-size: 20px; color: #6b7280; margin-right: 12px;")
+              select.inner-input(name="price" style="border: none; outline: none; background: transparent; width: 100%; -webkit-appearance: none; appearance: none; cursor: pointer; color: #333;")
+                option(value="" disabled selected hidden) Mức giá
+                option(value="0-5000000") Dưới 5 Triệu
+                option(value="5000000-10000000") 5 - 10 Triệu
+                option(value="10000000-20000000") 10 - 20 Triệu
+                option(value="20000000-1000000000") Trên 20 Triệu
               i.fa-solid.fa-angle-down.inner-down
-            .inner-quantity
-              .inner-item
-                .inner-label Người lớn
-                .inner-count
-                  span.inner-down -
-                  span.inner-number(stock-adult) 1
-                  span.inner-up +
-              .inner-item
-                .inner-label Trẻ em
-                .inner-count
-                  span.inner-down -
-                  span.inner-number(stock-children) 0
-                  span.inner-up +
-              .inner-item
-                .inner-label Em bé
-                .inner-count
-                  span.inner-down -
-                  span.inner-number(stock-baby) 0
-                  span.inner-up +
           .inner-box.inner-calendar
             .inner-input-group
               img.inner-icon(src="/assets/images/icon-calendar.svg")

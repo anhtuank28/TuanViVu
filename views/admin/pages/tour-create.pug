@@ -76,8 +76,11 @@ block main
           .inner-checkbox-list
             each item in cityList
               .inner-checkbox-item
-                input(type="checkbox" name="locations" value=item.id)
+                input(type="checkbox" name="locations" value=item.name)
                 label #{item.name}
+        .inner-group
+          label(class="inner-label") Địa điểm khác (cách nhau bởi dấu phẩy)
+          input(type="text" name="customLocations" placeholder="VD: Singapore, Malaysia")
         .inner-group
           label(class="inner-label" for="time") Thời gian
           input(type="text" id="time" name="time")

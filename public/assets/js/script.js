@@ -504,11 +504,12 @@ if(alertElements.length > 0) {
 // Box Filter
 const boxFilter = document.querySelector(".box-filter");
 if(boxFilter) {
-  const url = new URL(`${window.location.origin}/search`);
+  const url = new URL(window.location.href);
 
   const buttonApply = boxFilter.querySelector(".inner-button");
 
   const filterList = [
+    "keyword",
     "locationFrom",
     "locationTo",
     "departureDate",
@@ -519,16 +520,31 @@ if(boxFilter) {
   ];
 
   buttonApply.addEventListener("click", () => {
+    url.searchParams.delete("page");
     filterList.forEach(name => {
-      const value = boxFilter.querySelector(`[name="${name}"]`).value;
-      if(value) {
-        url.searchParams.set(name, value);
-      } else {
-        url.searchParams.delete(name);
+      const input = boxFilter.querySelector(`[name="${name}"]`);
+      if (input) {
+        const value = input.value;
+        if(value && value !== "0") {
+          url.searchParams.set(name, value);
+        } else {
+          url.searchParams.delete(name);
+        }
       }
     })
 
     window.location.href = url.href;
+  })
+
+  // Set default values from URL
+  filterList.forEach(name => {
+    const value = url.searchParams.get(name);
+    if(value) {
+      const input = boxFilter.querySelector(`[name="${name}"]`);
+      if(input) {
+        input.value = value;
+      }
+    }
   })
 }
 // End Box Filter
@@ -549,26 +565,12 @@ if(formSearch) {
       url.searchParams.delete("locationTo");
     }
 
-    // Số lượng
-    const stockAdult = parseInt(formSearch.querySelector("[stock-adult]").innerHTML);
-    if(stockAdult > 0) {
-      url.searchParams.set("stockAdult", stockAdult);
+    // Giá tiền
+    const price = formSearch.price ? formSearch.price.value : "";
+    if(price) {
+      url.searchParams.set("price", price);
     } else {
-      url.searchParams.delete("stockAdult");
-    }
-
-    const stockChildren = parseInt(formSearch.querySelector("[stock-children]").innerHTML);
-    if(stockChildren > 0) {
-      url.searchParams.set("stockChildren", stockChildren);
-    } else {
-      url.searchParams.delete("stockChildren");
-    }
-
-    const stockBaby = parseInt(formSearch.querySelector("[stock-baby]").innerHTML);
-    if(stockBaby > 0) {
-      url.searchParams.set("stockBaby", stockBaby);
-    } else {
-      url.searchParams.delete("stockBaby");
+      url.searchParams.delete("price");
     }
 
     // Ngày khởi hành
