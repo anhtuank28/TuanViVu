@@ -1999,7 +1999,11 @@ input, button, textarea {
   margin-top: 30px;
 }
 
-.box-pagination button {
+.box-pagination button,
+.box-pagination a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 40px;
   height: 40px;
   border: 1px solid var(--color-primary);
@@ -2009,29 +2013,36 @@ input, button, textarea {
   font-size: 14px;
   color: var(--color-primary);
   cursor: pointer;
+  text-decoration: none;
 }
 
-.box-pagination button:last-child {
+.box-pagination button:last-child,
+.box-pagination a:last-child {
   border-right-width: 1px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
-.box-pagination button:first-child {
+.box-pagination button:first-child,
+.box-pagination a:first-child {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
 
-.box-pagination button i {
+.box-pagination button i,
+.box-pagination a i {
   font-size: 12px;
 }
 
 .box-pagination button.active,
-.box-pagination button:hover {
+.box-pagination button:hover,
+.box-pagination a.active,
+.box-pagination a:hover {
   background-color: var(--color-primary);
   color: #fff;
 }
 /* End Pagination */
+
 
 /* Section 10 */
 .section-10 {
@@ -2080,6 +2091,7 @@ input, button, textarea {
 }
 
 .box-images .inner-images-main .inner-image {
+  width: 100%;
   aspect-ratio: 695/480;
   border-radius: 10px;
   overflow: hidden;
@@ -2098,6 +2110,7 @@ input, button, textarea {
 } */
 
 .box-images .inner-images-thumb .inner-image {
+  width: 100%;
   aspect-ratio: 166/129;
   border-radius: 10px;
   overflow: hidden;

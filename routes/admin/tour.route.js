@@ -11,11 +11,11 @@ const authMiddleware = require("../../middlewares/admin/auth.middleware");
 
 router.get("/list", authMiddleware.requireAuth("tour-view"), tourController.list);
 router.get("/create", authMiddleware.requireAuth("tour-create"), tourController.create);
-router.post("/create", authMiddleware.requireAuth("tour-create"), upload.single("avatar"), tourValidate.createPost, tourController.createPost);
+router.post("/create", authMiddleware.requireAuth("tour-create"), upload.none(), tourValidate.createPost, tourController.createPost);
 router.get("/trash", authMiddleware.requireAuth("tour-delete"), tourController.trash);
 router.get("/edit/:id", authMiddleware.requireAuth("tour-edit"), tourController.edit);
 router.patch("/delete/:id", authMiddleware.requireAuth("tour-delete"), tourController.deletePatch);
-router.patch("/edit/:id", authMiddleware.requireAuth("tour-edit"), upload.single("avatar"), tourValidate.createPost, tourController.editPatch);
+router.patch("/edit/:id", authMiddleware.requireAuth("tour-edit"), upload.none(), tourValidate.createPost, tourController.editPatch);
 
 router.patch("/change-multi", authMiddleware.requireAuth("tour-edit"), tourController.changeMultiPatch);
 router.patch("/trash/change-multi", authMiddleware.requireAuth("tour-delete"), tourController.trashChangeMultiPatch);

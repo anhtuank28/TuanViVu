@@ -9,6 +9,7 @@ const schema = new mongoose.Schema(
         position: Number,
         status: String,
         avatar: String,
+        images: Array,
         priceAdult: Number,
         priceChildren: Number,
         priceBaby: Number,
@@ -24,6 +25,7 @@ const schema = new mongoose.Schema(
         vehicle: String,
         departureDate: Date,
         information: String,
+        
         schedules: Array,
         createdBy: String,
         updatedBy: String,

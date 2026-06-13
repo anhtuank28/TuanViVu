@@ -142,7 +142,17 @@ module.exports.createPost = async (req, res) => {
 
   req.body.createdBy = req.account.id;
   req.body.updatedBy = req.account.id;
-  req.body.avatar = req.file ? req.file.path : "";
+  
+  if (!req.body.avatar) {
+    req.body.avatar = "";
+  }
+  
+  if (req.body.images) {
+    // If multiple images, body.images might be an array. If one, it might be a string.
+    req.body.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
+  } else {
+    req.body.images = [];
+  }
 
   req.body.priceAdult = req.body.priceAdult ? parseInt(req.body.priceAdult) : 0;
   req.body.priceChildren = req.body.priceChildren ? parseInt(req.body.priceChildren) : 0;
@@ -183,10 +193,14 @@ module.exports.editPatch = async (req, res) => {
   }
 
   req.body.updatedBy = req.account.id;
-   if (req.file) {
-      req.body.avatar = req.file.path;
-    } else {
+   if (!req.body.avatar) {
       delete req.body.avatar;
+    }
+
+    if (req.body.images) {
+      req.body.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
+    } else {
+      req.body.images = [];
     }
 
   req.body.priceAdult = req.body.priceAdult ? parseInt(req.body.priceAdult) : 0;

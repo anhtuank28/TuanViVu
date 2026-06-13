@@ -99,7 +99,10 @@ if (listFilepondImage.length > 0) {
 
     filePond[filepondImage.name] = FilePond.create(filepondImage, {
       labelIdle: '+',
-      files: files
+      files: files,
+      server: {
+        process: `/${pathAdmin}/upload`
+      }
     });
   });
 }
@@ -131,6 +134,9 @@ if (listFilepondImageMulti.length > 0) {
     filePondMulti[filepondImage.name] = FilePond.create(filepondImage, {
       labelIdle: '+',
       files: files,
+      server: {
+        process: `/${pathAdmin}/upload`
+      }
     });
   });
 }
@@ -372,10 +378,11 @@ if (tourCreateForm) {
       const category = event.target.category.value;
       const position = event.target.position.value;
       const status = event.target.status.value;
+      const isFeatured = event.target.isFeatured.value;
       const avatars = filePond.avatar.getFiles();
-      let avatar = null;
+      let avatar = "";
       if (avatars.length > 0) {
-        avatar = avatars[0].file;
+        avatar = avatars[0].serverId || avatars[0].source;
       }
       const priceAdult = event.target.priceAdult.value;
       const priceChildren = event.target.priceChildren.value;
@@ -386,6 +393,7 @@ if (tourCreateForm) {
       const stockAdult = event.target.stockAdult.value;
       const stockChildren = event.target.stockChildren.value;
       const stockBaby = event.target.stockBaby.value;
+      const locationFrom = event.target.locationFrom.value;
       const locations = [];
       const time = event.target.time.value;
       const vehicle = event.target.vehicle.value;
@@ -428,6 +436,7 @@ if (tourCreateForm) {
       formData.append("category", category);
       formData.append("position", position);
       formData.append("status", status);
+      formData.append("isFeatured", isFeatured);
       formData.append("avatar", avatar);
       formData.append("priceAdult", priceAdult);
       formData.append("priceChildren", priceChildren);
@@ -438,6 +447,7 @@ if (tourCreateForm) {
       formData.append("stockAdult", stockAdult);
       formData.append("stockChildren", stockChildren);
       formData.append("stockBaby", stockBaby);
+      formData.append("locationFrom", locationFrom);
       formData.append("locations", JSON.stringify(locations));
       formData.append("time", time);
       formData.append("vehicle", vehicle);
@@ -446,9 +456,10 @@ if (tourCreateForm) {
       formData.append("schedules", JSON.stringify(schedules));
 
       // images
-      if (filePondMulti.images.getFiles().length > 0) {
+      if (filePondMulti.images && filePondMulti.images.getFiles().length > 0) {
         filePondMulti.images.getFiles().forEach(item => {
-          formData.append("images", item.file);
+          const url = item.serverId || item.source;
+          formData.append("images", url);
         })
       }
       // End images
@@ -490,15 +501,11 @@ if (tourEditForm) {
       const category = event.target.category.value;
       const position = event.target.position.value;
       const status = event.target.status.value;
+      const isFeatured = event.target.isFeatured.value;
       const avatars = filePond.avatar.getFiles();
-      let avatar = null;
+      let avatar = "";
       if (avatars.length > 0) {
-        avatar = avatars[0].file;
-        const elementImageDefault = event.target.avatar.closest("[image-default]");
-        const imageDefault = elementImageDefault.getAttribute("image-default");
-        if (imageDefault.includes(avatar.name)) {
-          avatar = null;
-        }
+        avatar = avatars[0].serverId || avatars[0].source;
       }
       const priceAdult = event.target.priceAdult.value;
       const priceChildren = event.target.priceChildren.value;
@@ -509,6 +516,7 @@ if (tourEditForm) {
       const stockAdult = event.target.stockAdult.value;
       const stockChildren = event.target.stockChildren.value;
       const stockBaby = event.target.stockBaby.value;
+      const locationFrom = event.target.locationFrom.value;
       const locations = [];
       const time = event.target.time.value;
       const vehicle = event.target.vehicle.value;
@@ -551,6 +559,7 @@ if (tourEditForm) {
       formData.append("category", category);
       formData.append("position", position);
       formData.append("status", status);
+      formData.append("isFeatured", isFeatured);
       formData.append("avatar", avatar);
       formData.append("priceAdult", priceAdult);
       formData.append("priceChildren", priceChildren);
@@ -561,6 +570,7 @@ if (tourEditForm) {
       formData.append("stockAdult", stockAdult);
       formData.append("stockChildren", stockChildren);
       formData.append("stockBaby", stockBaby);
+      formData.append("locationFrom", locationFrom);
       formData.append("locations", JSON.stringify(locations));
       formData.append("time", time);
       formData.append("vehicle", vehicle);
@@ -569,9 +579,10 @@ if (tourEditForm) {
       formData.append("schedules", JSON.stringify(schedules));
 
       // images
-      if (filePondMulti.images.getFiles().length > 0) {
+      if (filePondMulti.images && filePondMulti.images.getFiles().length > 0) {
         filePondMulti.images.getFiles().forEach(item => {
-          formData.append("images", item.file);
+          const url = item.serverId || item.source;
+          formData.append("images", url);
         })
       }
       // End images

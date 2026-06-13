@@ -153,6 +153,11 @@ module.exports.list=async (req,res)=>{
 
     const totalPages = Math.ceil(totalTour / limit);
 
+    // Build query string for pagination links (preserve filters, exclude page)
+    const queryParams = { ...req.query };
+    delete queryParams.page;
+    const queryString = new URLSearchParams(queryParams).toString();
+
     res.render("client/pages/tour-list", {
         pageTitle: category.name,
         breadcrumb: breadcrumb,
@@ -162,11 +167,104 @@ module.exports.list=async (req,res)=>{
         destinationList: destinationList,
         totalTour: totalTour,
         page: page,
-        totalPages: totalPages
+        totalPages: totalPages,
+        queryString: queryString
     });
     }else{
         res.redirect("/");
     }
 
    
+}
+
+module.exports.listAll = async (req, res) => {
+    const bannerImage = "https://res.cloudinary.com/dk4hfh4un/image/upload/v1780907694/tours/tgp9vs79kifu1lmiazxl.jpg";
+
+    const breadcrumb = {
+        image: bannerImage,
+        title: "Tất Cả Tour",
+        list: [
+            { link: "/", title: "Trang chủ" },
+            { link: "/category/all", title: "Tất Cả Tour" }
+        ]
+    };
+
+    // Virtual category object for template
+    const category = {
+        name: "Tất Cả Tour",
+        description: "Khám phá toàn bộ các tour du lịch trong nước và quốc tế hấp dẫn nhất."
+    };
+
+    let page = parseInt(req.query.page) || 1;
+    let limit = 6;
+    let skip = (page - 1) * limit;
+
+    const find = { deleted: false, status: "active" };
+
+    if (req.query.locationFrom) {
+        find.locationFrom = req.query.locationFrom;
+    }
+
+    if (req.query.locationTo) {
+        const locationRegex = new RegExp(req.query.locationTo, "i");
+        find.$or = [
+            { name: locationRegex },
+            { locations: locationRegex }
+        ];
+    }
+
+    if (req.query.departureDate) {
+        const date = new Date(req.query.departureDate);
+        const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+        find.departureDate = { $gte: startOfDay, $lte: endOfDay };
+    }
+
+    if (req.query.price) {
+        const [min, max] = req.query.price.split("-");
+        if (min && max) {
+            find.priceNewAdult = { $gte: parseInt(min), $lte: parseInt(max) };
+        }
+    }
+
+    if (req.query.stockAdult && parseInt(req.query.stockAdult) > 0) {
+        find.stockAdult = { $gte: parseInt(req.query.stockAdult) };
+    }
+    if (req.query.stockChildren && parseInt(req.query.stockChildren) > 0) {
+        find.stockChildren = { $gte: parseInt(req.query.stockChildren) };
+    }
+    if (req.query.stockBaby && parseInt(req.query.stockBaby) > 0) {
+        find.stockBaby = { $gte: parseInt(req.query.stockBaby) };
+    }
+
+    const tourList = await Tour.find(find).skip(skip).limit(limit);
+
+    tourList.forEach(item => {
+        if (item.departureDate) {
+            item.departureDateFormat = moment(item.departureDate).format("DD/MM/YYYY");
+        }
+    });
+
+    const cityList = await City.find({ deleted: false, status: "active" });
+    const destinationList = await Tour.distinct("locations", { deleted: false, status: "active" });
+    const totalTour = await Tour.countDocuments(find);
+    const totalPages = Math.ceil(totalTour / limit);
+
+    // Build query string for pagination links (preserve filters, exclude page)
+    const queryParams = { ...req.query };
+    delete queryParams.page;
+    const queryString = new URLSearchParams(queryParams).toString();
+
+    res.render("client/pages/tour-list", {
+        pageTitle: "Tất Cả Tour",
+        breadcrumb,
+        tourList,
+        category,
+        cityList,
+        destinationList,
+        totalTour,
+        page,
+        totalPages,
+        queryString
+    });
 }

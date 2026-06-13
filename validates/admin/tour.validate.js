@@ -34,8 +34,11 @@ module.exports.createPost = (req, res, next) => {
         information: Joi.string().allow(""),
         schedules: Joi.array(),
         createdBy: Joi.string().allow(""),
-        updatedBy: Joi.string().allow("")
-    });
+        updatedBy: Joi.string().allow(""),
+        images: Joi.alternatives().try(Joi.array(), Joi.string()).allow(""),
+        locationFrom: Joi.string().allow(""),
+        isFeatured: Joi.string().allow("")
+    }).unknown(true);
 
     const { error } = schema.validate(req.body);
     if (error) {

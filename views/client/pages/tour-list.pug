@@ -106,15 +106,16 @@ block main
             else 
               p Không có tour nào trong danh mục này.
           // Pagination
+          - const buildPageHref = (p) => queryString ? `?${queryString}&page=${p}` : `?page=${p}`
           if totalPages > 1
             .box-pagination
               if page > 1
-                button(onclick=`const u = new URL(window.location.href); u.searchParams.set('page', ${page - 1}); window.location.href = u.href;`)
+                a(href=buildPageHref(page - 1))
                   i.fa-solid.fa-angles-left
               - for(let i = 1; i <= totalPages; i++)
-                button(class=(i == page ? "active" : "") onclick=`const u = new URL(window.location.href); u.searchParams.set('page', ${i}); window.location.href = u.href;`) #{i}
+                a(class=(i == page ? "active" : "") href=buildPageHref(i)) #{i}
               if page < totalPages
-                button(onclick=`const u = new URL(window.location.href); u.searchParams.set('page', ${page + 1}); window.location.href = u.href;`)
+                a(href=buildPageHref(page + 1))
                   i.fa-solid.fa-angles-right
           // End Pagination
   // End Section 9

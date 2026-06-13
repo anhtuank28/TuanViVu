@@ -27,6 +27,9 @@ router.use("/contact",authMiddleware.verityToken, contactRoutes);
 router.use("/setting",authMiddleware.verityToken, settingRoutes);
 router.use("/profile",authMiddleware.verityToken, profileRoutes);
 
+const uploadRoutes = require("./upload.route");
+router.use("/upload", authMiddleware.verityToken, uploadRoutes);
+
 router.use((req, res) => {
   res.status(404).send("404 Not Found");
 });
