@@ -31,7 +31,8 @@ module.exports.home = async (req, res) => {
       pageTitle: "Trang chủ",
       tourListSection2: featuredTours,
       tourListSection4: domesticTours,
-      tourListSection5: internationalTours
+      tourListSection5: internationalTours,
+      isHome: true
     });
   } catch (error) {
     console.error(error);

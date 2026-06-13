@@ -11,6 +11,18 @@ window.addEventListener('scroll', () => {
 });
 // End Header Scroll Effect
 
+// Active Menu
+const currentPath = window.location.pathname;
+const menuLinks = document.querySelectorAll(".header .inner-menu a");
+
+menuLinks.forEach(link => {
+  const href = link.getAttribute("href");
+  if (href === currentPath || (currentPath.startsWith(href) && href !== "/")) {
+    link.classList.add("active");
+  }
+});
+// End Active Menu
+
 // Menu Mobile
 const buttonMenuMobile = document.querySelector(".header .inner-menu-mobile");
 if(buttonMenuMobile) {

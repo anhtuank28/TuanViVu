@@ -78,8 +78,23 @@ module.exports.list=async (req,res)=>{
     let limit = 6; // Display 6 tours per page
     let skip = (page - 1) * limit;
 
+    // Đệ quy lấy tất cả các danh mục con
+    const getSubCategories = async (parentId) => {
+        let subs = [];
+        const children = await Category.find({ parent: parentId, deleted: false, status: "active" });
+        for (const child of children) {
+            subs.push(child._id.toString());
+            const childSubs = await getSubCategories(child._id.toString());
+            subs = subs.concat(childSubs);
+        }
+        return subs;
+    };
+
+    const subCategoryIds = await getSubCategories(category.id);
+    const allCategoryIds = [category.id, ...subCategoryIds];
+
     const find = {
-        category: category.id,
+        category: { $in: allCategoryIds },
         deleted: false,
         status: "active"
     };
@@ -144,7 +159,7 @@ module.exports.list=async (req,res)=>{
 
     // Lấy danh sách các điểm đến (locations) duy nhất của các tour trong danh mục này
     const destinationList = await Tour.distinct("locations", {
-        category: category.id,
+        category: { $in: allCategoryIds },
         deleted: false,
         status: "active"
     });
