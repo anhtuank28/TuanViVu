@@ -1,0 +1,53 @@
+extends ../layouts/default.pug
+
+block head
+  link(rel="stylesheet", href="/assets/css/order-success.css")
+
+block main
+  .order-success-wrapper
+    .glass-card(data-aos="zoom-in", data-aos-duration="800")
+      .success-animation
+        svg.checkmark(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52")
+          circle.checkmark__circle(cx="26" cy="26" r="25" fill="none")
+          path.checkmark__check(fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8")
+      h1.success-title Đặt hàng thành công!
+      if order
+        p.success-desc Cảm ơn <b>#{order.fullName}</b> đã tin tưởng và lựa chọn dịch vụ của chúng tôi. <br> Mã đơn hàng của bạn là <b>##{order.orderCode}</b>. Chúng tôi sẽ sớm liên hệ qua số điện thoại <b>#{order.phone}</b> để xác nhận chuyến đi tuyệt vời của bạn.
+        
+        .order-summary
+          h3.summary-title Chi tiết chuyến đi
+          .summary-items
+            each item in order.items
+              .summary-item
+                .summary-item-img
+                  img(src=item.avatar, alt=item.name)
+                .summary-item-info
+                  h4.summary-item-name #{item.name}
+                  .summary-item-meta
+                    i.fa-solid.fa-calendar-days
+                    |  Khởi hành: 
+                    b #{new Date(item.departureDate).toLocaleDateString('vi-VN')}
+                  .summary-item-pax
+                    if item.quantityAdult > 0
+                      span NL: #{item.quantityAdult} x #{item.priceNewAdult.toLocaleString('vi-VN')}đ
+                    if item.quantityChildren > 0
+                      span TE: #{item.quantityChildren} x #{item.priceNewChildren.toLocaleString('vi-VN')}đ
+                    if item.quantityBaby > 0
+                      span EB: #{item.quantityBaby} x #{item.priceNewBaby.toLocaleString('vi-VN')}đ
+          .summary-total
+            span Tổng thanh toán:
+            span.total-price #{order.total.toLocaleString('vi-VN')}đ
+          .summary-payment
+            span Phương thức:
+            span.payment-method #{order.paymentMethodName}
+
+      else
+        p.success-desc Cảm ơn bạn đã tin tưởng và lựa chọn dịch vụ của chúng tôi. Chúng tôi sẽ sớm liên hệ để xác nhận chuyến đi tuyệt vời của bạn.
+      
+      .success-actions
+        a.btn-primary.glass-btn(href="/")
+          i.fa-solid.fa-house
+          | Trở về trang chủ
+        a.btn-secondary.glass-btn(href="/tours")
+          i.fa-solid.fa-compass
+          | Khám phá thêm Tour

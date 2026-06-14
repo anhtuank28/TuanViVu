@@ -849,7 +849,7 @@ const drawCart = () => {
             const cart = JSON.parse(localStorage.getItem("cart"));
             const indexItem = cart.findIndex(tour => tour.tourId == tourId);
             cart.splice(indexItem, 1);
-            localStorage.setItem("cart", JSON.stringify(cart));
+            localStorage.setItem("cart", JSON.stringify(cart));   
             drawCart();
           })
         })
