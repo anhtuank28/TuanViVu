@@ -53,18 +53,18 @@ block main
                 img(src=item.avatar, alt=item.name)
               .inner-order-content
                 .inner-order-name #{item.name}
-                .inner-order-text Người lớn: #{item.quantityAdult} x #{item.priceNewAdult.toLocaleString("vi-VN")}đ
-                .inner-order-text Trẻ em: #{item.quantityChildren} x #{item.priceNewChildren.toLocaleString("vi-VN")}đ
-                .inner-order-text Em bé: #{item.quantityBaby} x #{item.priceNewBaby.toLocaleString("vi-VN")}đ
+                .inner-order-text Người lớn: #{item.quantityAdult} x #{(item.priceNewAdult || 0).toLocaleString("vi-VN")}đ
+                .inner-order-text Trẻ em: #{item.quantityChildren} x #{(item.priceNewChildren || 0).toLocaleString("vi-VN")}đ
+                .inner-order-text Em bé: #{item.quantityBaby} x #{(item.priceNewBaby || 0).toLocaleString("vi-VN")}đ
                 .inner-order-text Ngày khởi hành: #{item.departureDateFormat}
                 .inner-order-text Khởi hành tại: #{item.locationFromName}
       .inner-group
         label(class="inner-label") Thanh toán
         .inner-order-total
-          div Tạm tính: #{orderDetail.subTotal.toLocaleString("vi-VN")}đ
-          div Giảm: #{orderDetail.discount.toLocaleString("vi-VN")}đ
+          div Tạm tính: #{(orderDetail.subTotal || 0).toLocaleString("vi-VN")}đ
+          div Giảm: #{(orderDetail.discount || 0).toLocaleString("vi-VN")}đ
           //- div Mã giảm: TOURMUAHE2024
-          div Thanh toán: <span class="inner-order-price">#{orderDetail.total.toLocaleString("vi-VN")}đ</span>
+          div Thanh toán: <span class="inner-order-price">#{(orderDetail.total || 0).toLocaleString("vi-VN")}đ</span>
       .inner-button.inner-two-col
         button Cập nhật
     .inner-back

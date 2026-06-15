@@ -78,7 +78,10 @@ block main
               td
                 div Tổng tiền: <b style="color: red;">#{(orderDetail.total || 0).toLocaleString("vi-VN")}đ</b>
                 div Thanh toán: <b>#{orderDetail.paymentMethodName}</b>
-                div Trạng thái: <b>#{orderDetail.paymentStatusName}</b>
+                if (orderDetail.paymentStatus == "paid")
+                  div Trạng thái: <b style="color: green;">#{orderDetail.paymentStatusName}</b>
+                else
+                  div Trạng thái: <b style="color: orange;">#{orderDetail.paymentStatusName}</b>
               td
                 if (orderDetail.status == "initial")
                   .badge.badge-orange #{orderDetail.statusName}
