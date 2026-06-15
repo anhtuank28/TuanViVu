@@ -3,43 +3,44 @@ extends ../layouts/default.pug
 block main
   h1.box-title Quản lý đơn hàng
 
-  //- Section 4
-  .section-4
-    .inner-wrap
-      .inner-item.inner-label
-        <i class="fa-solid fa-filter"></i> Bộ lọc
-      .inner-item
-        select
-          option(value="") Trạng thái
-          option(value="") Khởi tạo
-          option(value="") Hoàn thành
-          option(value="") Hủy
-      .inner-item.inner-date
-        input(type="date")
-        span -
-        input(type="date")
-      .inner-item
-        select
-          option(value="") Phương thức thanh toán
-          option(value="") Ví Momo
-          option(value="") VNPay
-          option(value="") ZaloPay
-      .inner-item
-        select
-          option(value="") Trạng thái thanh toán
-          option(value="") Đã thanh toán
-          option(value="") Chưa thanh toán
-      .inner-item.inner-reset
-        <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
-  //- End Section 4
+  form(action="" method="GET" id="form-filter")
+    //- Section 4
+    .section-4
+      .inner-wrap
+        .inner-item.inner-label
+          <i class="fa-solid fa-filter"></i> Bộ lọc
+        .inner-item
+          select(name="status" onchange="this.form.submit()")
+            option(value="") Trạng thái
+            option(value="initial" selected=(query.status == "initial")) Khởi tạo
+            option(value="done" selected=(query.status == "done")) Hoàn thành
+            option(value="cancel" selected=(query.status == "cancel")) Hủy
+        .inner-item.inner-date
+          input(type="date" name="fromDate" value=query.fromDate onchange="this.form.submit()")
+          span -
+          input(type="date" name="toDate" value=query.toDate onchange="this.form.submit()")
+        .inner-item
+          select(name="paymentMethod" onchange="this.form.submit()")
+            option(value="") Phương thức thanh toán
+            option(value="money" selected=(query.paymentMethod == "money")) Tiền mặt
+            option(value="momo" selected=(query.paymentMethod == "momo")) Ví Momo
+            option(value="bank" selected=(query.paymentMethod == "bank")) Chuyển khoản
+        .inner-item
+          select(name="paymentStatus" onchange="this.form.submit()")
+            option(value="") Trạng thái thanh toán
+            option(value="paid" selected=(query.paymentStatus == "paid")) Đã thanh toán
+            option(value="unpaid" selected=(query.paymentStatus == "unpaid")) Chưa thanh toán
+        .inner-item.inner-reset(onclick="window.location.href=window.location.pathname" style="cursor: pointer;")
+          <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
+    //- End Section 4
 
-  //- Section 5
-  .section-5
-    .inner-wrap
-      .inner-search
-        <i class="fa-solid fa-magnifying-glass"></i>
-        input(type="text" placeholder="Tìm kiếm")
-  //- End Section 5
+    //- Section 5
+    .section-5
+      .inner-wrap
+        .inner-search
+          <i class="fa-solid fa-magnifying-glass"></i>
+          input(type="text" name="keyword" placeholder="Tìm kiếm" value=query.keyword onchange="this.form.submit()")
+    //- End Section 5
 
   //- Section 6
   .section-6
@@ -71,16 +72,13 @@ block main
                       img(src=item.avatar, alt=item.name)
                     .inner-content
                       .inner-name #{item.name}
-                      .inner-quantity Người lớn: #{item.quantityAdult} x #{item.priceNewAdult.toLocaleString("vi-VN")}đ
-                      .inner-quantity Trẻ em: #{item.quantityChildren} x #{item.priceNewChildren.toLocaleString("vi-VN")}đ
-                      .inner-quantity Em bé: #{item.quantityBaby} x #{item.priceNewBaby.toLocaleString("vi-VN")}đ
+                      .inner-quantity Người lớn: #{item.quantityAdult} x #{(item.priceNewAdult || 0).toLocaleString("vi-VN")}đ
+                      .inner-quantity Trẻ em: #{item.quantityChildren} x #{(item.priceNewChildren || 0).toLocaleString("vi-VN")}đ
+                      .inner-quantity Em bé: #{item.quantityBaby} x #{(item.priceNewBaby || 0).toLocaleString("vi-VN")}đ
               td
-                div Tạm tính: #{orderDetail.subTotal.toLocaleString("vi-VN")}đ
-                div Giảm: #{orderDetail.discount.toLocaleString("vi-VN")}đ
-                //- div Mã giảm: TOURMUAHE2024
-                div Thanh toán: #{orderDetail.total.toLocaleString("vi-VN")}đ
-                div PTTT: #{orderDetail.paymentMethodName}
-                div TTTT: #{orderDetail.paymentStatusName}
+                div Tổng tiền: <b style="color: red;">#{(orderDetail.total || 0).toLocaleString("vi-VN")}đ</b>
+                div Thanh toán: <b>#{orderDetail.paymentMethodName}</b>
+                div Trạng thái: <b>#{orderDetail.paymentStatusName}</b>
               td
                 if (orderDetail.status == "initial")
                   .badge.badge-orange #{orderDetail.statusName}
