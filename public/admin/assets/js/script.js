@@ -244,10 +244,16 @@ if (revenueChart) {
   drawChart(now);
 
   const inputMonth = document.querySelector(".section-2 input[type='month']");
-  inputMonth.addEventListener("change", () => {
-    const value = inputMonth.value;
-    drawChart(new Date(value));
-  })
+  if (inputMonth) {
+    inputMonth.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    inputMonth.addEventListener("change", () => {
+      const value = inputMonth.value;
+      if (value) {
+        drawChart(new Date(value));
+      }
+    });
+  }
 }
 // Hết Biểu đồ doanh thu
 
