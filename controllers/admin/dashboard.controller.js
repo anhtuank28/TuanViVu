@@ -1,5 +1,8 @@
 const AccountAdmin = require("../../models/account-admin.model");
 const Order = require("../../models/order.model");
+const variableConfig = require("../../config/variable");
+const moment = require("moment");
+
 
 module.exports.dashboard = async (req, res) => {
   const overview={
@@ -16,15 +19,33 @@ module.exports.dashboard = async (req, res) => {
 
   const orderList=await Order.find({
     deleted:false
-  })
+  }).sort({ createdAt: "desc" }).limit(2)
 
   overview.totalOrder=orderList.length;
   overview.totalPrice=orderList.reduce((sum,item)=>{
     return sum+item.total;
   },0)
+
+  const recentOrders = orderList.slice(0, 5);
+
+  for (const orderDetail of recentOrders) {
+    const pm = variableConfig.paymentMethod.find(item => item.value == orderDetail.paymentMethod);
+    orderDetail.paymentMethodName = pm ? pm.label : orderDetail.paymentMethod;
+
+    const ps = variableConfig.paymentStatus.find(item => item.value == orderDetail.paymentStatus);
+    orderDetail.paymentStatusName = ps ? ps.label : orderDetail.paymentStatus;
+
+    const os = variableConfig.orderStatus.find(item => item.value == orderDetail.status);
+    orderDetail.statusName = os ? os.label : orderDetail.status;
+
+    orderDetail.createdAtDate = moment(orderDetail.createdAt).format("DD/MM/YYYY");
+    orderDetail.createdAtTime = moment(orderDetail.createdAt).format("HH:mm");
+  }
+
   res.render("admin/pages/dashboard", {
     pageTitle: "dashboard",
-    overview:overview
+    overview:overview,
+    recentOrders: recentOrders
 })
 }
 
