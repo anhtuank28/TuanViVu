@@ -227,56 +227,16 @@ block main
         data-aos-duration="800" 
         data-aos="fade-up"
         )
-        .blog-item
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-1.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Homestay “cổ tích” giữa Đà Lạt mộng mơ
-        .blog-item-2
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-2.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Top 5 điểm check in độc đáo tại Singapore
-              .inner-desc
-                | Nếu bạn nghĩ du lịch Singapore rất nhàm chán vì chỉ mãi quanh quẩn trong những khối bê tông vô cảm thì bạn “chắc chưa?”. Tuy đảo quốc Sư Tử không phải là một quốc gia rộng lớn nhưng các địa điểm du lịch tại Singapore chưa từng đánh mất sức hút đối với cộng đồng xê dịch quốc tế.
-        .blog-item
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-3.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Đặc sản không thể bỏ qua khi đến với Đà Nẵng - Hội An
-        .blog-item
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-4.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Đảo Phú Quý Bình Thuận hot trend năm 2024
-        .blog-item
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-5.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Trekking cắm trại tại Đà Lạt- Cảm nhận Đà Lạt qua từng bước chân
+        if (recentArticles && recentArticles.length > 0)
+          each item, index in recentArticles
+            div(class=(index === 1 ? 'blog-item-2' : 'blog-item'))
+              a(href=`/article/${item.slug}`)
+                .inner-image
+                  img(src=item.avatar, alt=item.title, style="width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/3;")
+                .inner-content
+                  .inner-date #{new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                  h3.inner-title #{item.title}
+
+        else
+          p Hiện chưa có bài viết nào.
   // End Section 8

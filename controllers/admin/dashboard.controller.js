@@ -19,7 +19,7 @@ module.exports.dashboard = async (req, res) => {
 
   const orderList=await Order.find({
     deleted:false
-  }).sort({ createdAt: "desc" }).limit(2)
+  }).sort({ createdAt: "desc" })
 
   overview.totalOrder=orderList.length;
   overview.totalPrice=orderList.reduce((sum,item)=>{

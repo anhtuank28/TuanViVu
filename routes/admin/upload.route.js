@@ -12,4 +12,14 @@ router.post("/", upload.any(), (req, res) => {
     }
 });
 
+// Route cho TinyMCE image upload
+router.post("/image", upload.any(), (req, res) => {
+    if (req.files && req.files.length > 0) {
+        // TinyMCE yêu cầu response JSON có trường "location"
+        res.json({ location: req.files[0].path });
+    } else {
+        res.status(400).json({ error: "Upload failed" });
+    }
+});
+
 module.exports = router;

@@ -1,7 +1,10 @@
 const moongose = require("mongoose");
 const schema= new moongose.Schema(
     {
-        email:String,
+        fullName: String,
+        email: String,
+        phone: String,
+        message: String,
         deleted:{
             type:Boolean,
             default:false

@@ -8,6 +8,7 @@ const userRoutes = require("./user.route");
 const contactRoutes = require("./contact.route");
 const settingRoutes = require("./setting.route");
 const profileRoutes = require("./profile.route");
+const articleRoutes = require("./article.route");
 
 const authMiddleware=require("../../middlewares/admin/auth.middleware");
 
@@ -26,6 +27,7 @@ router.use("/user",authMiddleware.verityToken, userRoutes);
 router.use("/contact",authMiddleware.verityToken, contactRoutes);
 router.use("/setting",authMiddleware.verityToken, settingRoutes);
 router.use("/profile",authMiddleware.verityToken, profileRoutes);
+router.use("/article",authMiddleware.verityToken, articleRoutes);
 
 const uploadRoutes = require("./upload.route");
 router.use("/upload", authMiddleware.verityToken, uploadRoutes);

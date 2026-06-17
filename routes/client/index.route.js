@@ -6,6 +6,7 @@ const contactRouters=require("./contact.route");
 const categoryRouters=require("./category.route");
 const searchRouters=require("./search.route");
 const orderRouters=require("./order.route");
+const articleRoutes=require("./article.route");
 
 const settingMiddleWare=require("../../middlewares/client/setting.middleware");
 const categoryMiddleWare=require("../../middlewares/client/category.middleware");
@@ -21,5 +22,6 @@ router.use("/contact", contactRouters);
 router.use("/category", categoryRouters);
 router.use("/search", searchRouters);
 router.use("/order",orderRouters);
+router.use("/article", articleRoutes);
 
 module.exports = router;

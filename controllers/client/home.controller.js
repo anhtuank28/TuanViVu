@@ -27,11 +27,17 @@ module.exports.home = async (req, res) => {
     const domesticTours = await getToursByParentCategoryName("Tour Trong Nước");
     const internationalTours = await getToursByParentCategoryName("Tour Nước Ngoài");
 
+    const Article = require("../../models/article.model");
+    const recentArticles = await Article.find({ deleted: false, status: "active" })
+      .sort({ position: "asc" })
+      .limit(5);
+
     res.render("client/pages/home.pug", {
       pageTitle: "Trang chủ",
       tourListSection2: featuredTours,
       tourListSection4: domesticTours,
       tourListSection5: internationalTours,
+      recentArticles: recentArticles,
       isHome: true
     });
   } catch (error) {

@@ -43,7 +43,10 @@ block main
           tr
             th(class="inner-center")
               input(type="checkbox" class="inner-check")
+            th Họ và tên
             th Email
+            th Điện thoại
+            th Nội dung
             th Ngày tạo
             if(permissions.includes('contact-delete'))
               th(class="inner-center") Hành động
@@ -52,7 +55,10 @@ block main
             tr
               td(class="inner-center")
                 input(type="checkbox" class="inner-check")
+              td #{item.fullName || '-'}
               td #{item.email}
+              td #{item.phone || '-'}
+              td(style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;") #{item.message || '-'}
               td #{item.createdAtFormat}
               if(permissions.includes('contact-delete'))
                 td(class="inner-center")
@@ -61,7 +67,8 @@ block main
                       button-delete
                       data-api=`/${pathAdmin}/contact/delete/${item.id}`
                       class="inner-delete"
-                    ) <i class="fa-regular fa-trash-can"></i>
+                    ) 
+                      i.fa-regular.fa-trash-can
   //- End Section 6
 
   //- Section 7

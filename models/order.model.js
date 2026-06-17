@@ -7,6 +7,11 @@ const schema=new mongoose.Schema(
         note:String,
         items:Array,
         subTotal:Number,
+        discountAmount: {
+            type: Number,
+            default: 0
+        },
+        couponCode: String,
         total:Number,
         paymentMethod:String,
         paymentStatus:String,
