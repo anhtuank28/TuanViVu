@@ -11,7 +11,15 @@ module.exports.paymentMethod=[
     {
         label:"Chuyển khoản ngân hàng",
         value:"bank"
-    }
+    },
+    {
+        label:"Chuyển khoản qua zalo pay",
+        value:"zalopay"
+    },
+    {
+        label:"Chuyển khoản qua VNpay",
+        value:"vnpay"
+    },
 ];
 
 module.exports.paymentStatus=[

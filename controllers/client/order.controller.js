@@ -2,6 +2,7 @@ const Tour = require("../../models/tour.model");
 const Order = require("../../models/order.model");
 const variableHelper=require("../../config/variable");
 const generateHelper=require("../../helpers/generate.helper");
+const sortHelper=require("../../helpers/sort.helper");
 // Node v10.15.3
 const axios = require('axios').default; // npm install axios
 const CryptoJS = require('crypto-js'); // npm install crypto-js
@@ -222,3 +223,124 @@ const config = {
 
 
 }
+
+module.exports.paymentVnPay=async(req,res)=>{
+    try{
+        const orderId=req.query.orderId;
+        const orderDetail=await Order.findOne({
+            _id:orderId,
+            paymentStatus:"unpaid",
+            deleted:false
+        
+    });
+    if(!orderDetail){
+        res.redirect("/");
+        return;
+    }
+
+     let date = new Date();
+        let createDate = moment(date).format('YYYYMMDDHHmmss');
+        
+        let ipAddr = req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress;
+        
+        // VNPay Sandbox rất hay báo lỗi với IPv6, ta ép về 127.0.0.1 nếu không có IPv4 hợp lệ
+        ipAddr = '127.0.0.1';
+           
+        let tmnCode =process.env.VNPAY_CODE;
+        let secretKey =process.env.VNPAY_SECRET;
+        let vnpUrl =process.env.VNPAY_URL;
+        let returnUrl = `${process.env.DOMAIN_WEBSITE}/order/payment-vnpay-result`;
+        let orderIdVNP = `${orderId}-${Date.now()}`;
+        let amount = orderDetail.total;
+        let bankCode =""; 
+        
+        let locale = "vn";
+        let currCode = 'VND';
+        let vnp_Params = {};
+        vnp_Params['vnp_Version'] = '2.1.0';
+        vnp_Params['vnp_Command'] = 'pay';
+        vnp_Params['vnp_TmnCode'] = tmnCode;
+        vnp_Params['vnp_Locale'] = locale;
+        vnp_Params['vnp_CurrCode'] = currCode;
+        vnp_Params['vnp_TxnRef'] = orderIdVNP;
+        vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma don hang ' + orderId;
+        vnp_Params['vnp_OrderType'] = 'other';
+        vnp_Params['vnp_Amount'] = amount * 100;
+        vnp_Params['vnp_ReturnUrl'] = returnUrl;
+        vnp_Params['vnp_IpAddr'] = ipAddr;
+        vnp_Params['vnp_CreateDate'] = createDate;
+        if(bankCode !== null && bankCode !== ''){
+            vnp_Params['vnp_BankCode'] = bankCode;
+        }
+    
+        vnp_Params = sortHelper.sortObject(vnp_Params);
+    
+        let querystring = require('qs');
+        let signData = querystring.stringify(vnp_Params, { encode: false });
+        let crypto = require("crypto");     
+        let hmac = crypto.createHmac("sha512", secretKey);
+        let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex"); 
+        vnp_Params['vnp_SecureHash'] = signed;
+        vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+        
+    
+        res.redirect(vnpUrl)
+    }catch(error){
+        console.error("Lỗi tạo URL VNPay:", error);
+        res.redirect("/");
+    }
+}
+
+module.exports.paymentVnPayResult=async(req,res)=>{
+      let vnp_Params = req.query;
+    let secureHash = vnp_Params['vnp_SecureHash'];
+
+    
+
+    delete vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHashType'];
+
+    vnp_Params = sortHelper.sortObject(vnp_Params);
+
+    let secretKey = process.env.VNPAY_SECRET;
+
+    let querystring = require('qs');
+    let signData = querystring.stringify(vnp_Params, { encode: false });
+    let crypto = require("crypto");     
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");     
+
+    if(secureHash === signed){
+        if(vnp_Params["vnp_ResponseCode"]=="00" && vnp_Params["vnp_TransactionStatus"]=="00"){
+            const [orderId,date]=vnp_Params['vnp_TxnRef'].split("-");
+
+            const orderDetail=await Order.findOne({
+                _id:orderId,
+                deleted:false
+            })
+
+            if(!orderDetail){
+                return res.redirect("/");
+            }
+
+            await Order.updateOne({
+                _id:orderId,
+                deleted:false
+            },{
+                paymentStatus:"paid"
+            })
+            console.log(orderDetail);
+            console.log(`${process.env.DOMAIN_WEBSITE}/order/success?orderId=${orderId}&phone=${orderDetail.phone}`);
+            
+            res.redirect(`${process.env.DOMAIN_WEBSITE}/order/success?orderId=${orderId}&phone=${orderDetail.phone}`)
+        }else{
+            res.redirect("/")
+        }
+    } else{
+        res.redirect("/")
+    }
+}
+
