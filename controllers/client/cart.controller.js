@@ -1,15 +1,24 @@
 const Tour = require("../../models/tour.model");
 const City = require("../../models/city.model");
+const Coupon = require("../../models/coupon.model");
 const moment = require("moment");
 
 module.exports.cart = async (req, res) => {
+  const coupons = await Coupon.find({
+    status: "active",
+    deleted: false,
+    quantity: { $gt: 0 }
+  });
+
   res.render("client/pages/cart", {
     pageTitle: "Giỏ hàng",
+    coupons: coupons
   });
 };
 
 module.exports.detail=async(req,res)=>{
   const cart=req.body;
+  const validCart = [];
 
   for(const item of cart){
     const tourInfo=await Tour.findOne({
@@ -27,18 +36,17 @@ module.exports.detail=async(req,res)=>{
       item.priceNewChildren=tourInfo.priceNewChildren;
       item.priceNewBaby=tourInfo.priceNewBaby;
 
-      const city=await City.findOne({
+      const city = item.locationFrom ? await City.findOne({
         _id:item.locationFrom
-      });
-      item.locationFromName=city.name;
-    }else{
-      const indexItem=cart.findIndex(tour=>tour.tourId==item.tourId);
-      cart.splice(indexItem,1);
+      }) : null;
+      item.locationFromName = city ? city.name : "Chưa xác định";
+      
+      validCart.push(item);
     }
   }
 
   res.json({
     code:"success",
-    cart:cart
+    cart:validCart
   })
 }

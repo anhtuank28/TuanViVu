@@ -3,6 +3,7 @@ const orderController=require("../../controllers/client/order.controller");
 
 
 router.post("/create",orderController.createOrder)
+router.post("/check-coupon", orderController.checkCoupon)
 router.get("/success",orderController.success)
 router.get("/payment-zalopay",orderController.paymentZaloPay)
 router.post("/payment-zalopay-result",orderController.paymentZaloPayResultPost)

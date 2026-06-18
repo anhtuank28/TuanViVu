@@ -347,16 +347,105 @@ if(emailForm) {
 // Coupon Form
 const couponForm = document.querySelector("#coupon-form");
 if(couponForm) {
+  function showToast(msg, type) {
+    const alertDiv = document.createElement("div");
+    alertDiv.className = `alert alert-${type} show`;
+    alertDiv.style.position = "fixed";
+    alertDiv.style.top = "20px";
+    alertDiv.style.right = "20px";
+    alertDiv.style.zIndex = "9999";
+    alertDiv.innerHTML = `
+      <div class="alert-icon">
+        <i class="fa-solid ${type === 'success' ? 'fa-check' : 'fa-exclamation'}"></i>
+      </div>
+      <div class="alert-content">
+        <span>${msg}</span>
+      </div>
+      <div class="alert-close">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    const timeoutId = setTimeout(() => {
+      alertDiv.classList.remove("show");
+      alertDiv.classList.add("hide");
+      setTimeout(() => alertDiv.remove(), 500);
+    }, 5000);
+
+    const closeBtn = alertDiv.querySelector(".alert-close");
+    closeBtn.addEventListener("click", () => {
+      clearTimeout(timeoutId);
+      alertDiv.classList.remove("show");
+      alertDiv.classList.add("hide");
+      setTimeout(() => alertDiv.remove(), 500);
+    });
+  }
+
+  const couponInput = document.querySelector("#coupon-input");
+  const couponDropdown = document.querySelector("#coupon-dropdown");
+  
+  if (couponInput && couponDropdown) {
+    couponInput.addEventListener("focus", () => {
+      couponDropdown.style.display = "block";
+    });
+    
+    couponInput.addEventListener("blur", () => {
+      setTimeout(() => {
+        couponDropdown.style.display = "none";
+      }, 200);
+    });
+
+    const couponItems = couponDropdown.querySelectorAll(".coupon-item");
+    couponItems.forEach(item => {
+      item.addEventListener("click", () => {
+        if (item.dataset.code) {
+          couponInput.value = item.dataset.code;
+          couponForm.querySelector('button[type="submit"]').click();
+        }
+      });
+    });
+  }
+
   const validation = new JustValidate('#coupon-form');
 
   validation
+    .addField('#coupon-input', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập mã giảm giá!'
+      }
+    ])
     .onSuccess((event) => {
-      const coupon = event.target.coupon.value;
-      console.log(coupon);
-    })
-  ;
+      event.preventDefault();
+      const code = event.target.coupon.value;
+      const subTotalElement = document.querySelector("[cart-sub-total]");
+      if (!subTotalElement) return;
+      const subTotalStr = subTotalElement.innerText.replace(/\./g, "");
+      const subTotal = parseInt(subTotalStr) || 0;
+      
+      fetch(`/order/check-coupon`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: code, totalOrder: subTotal }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code === "error") {
+          showToast(data.message, "error");
+          document.querySelector("[cart-discount]").innerHTML = "0";
+          document.querySelector("[cart-total]").innerHTML = subTotal.toLocaleString("vi-VN");
+        } else {
+          showToast(data.message, "success");
+          const discount = data.discount;
+          document.querySelector("[cart-discount]").innerHTML = "-" + discount.toLocaleString("vi-VN");
+          const finalTotal = subTotal - discount > 0 ? subTotal - discount : 0;
+          document.querySelector("[cart-total]").innerHTML = finalTotal.toLocaleString("vi-VN");
+        }
+      });
+    });
 }
-// End Email Form
+// End Coupon Form
 
 // Order Form
 const orderForm = document.querySelector("#order-form");
@@ -418,7 +507,8 @@ if(orderForm) {
           phone: phone,
           note: note,
           paymentMethod: method,
-          items: cart
+          items: cart,
+          couponCode: document.querySelector('#coupon-input') ? document.querySelector('#coupon-input').value : ""
         };
 
         fetch(`/order/create`, {

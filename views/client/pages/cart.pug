@@ -12,12 +12,25 @@ block main
             i.fa-solid.fa-angle-right
         .inner-tour-list(cart-list)
         .inner-coupon
-          form#coupon-form(action="")
-            input#coupon-input(
-              name="coupon" 
-              placeholder="Nhập mã giảm giá" 
-              type="text"
+          form#coupon-form(action="" style="position: relative; overflow: visible;")
+            .coupon-input-wrapper(style="position: relative; flex: 1;")
+              input#coupon-input(
+                name="coupon" 
+                placeholder="Nhập mã giảm giá" 
+                type="text"
+                autocomplete="off"
+                style="width: 100%;"
               )
+              .coupon-dropdown#coupon-dropdown(style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 999; max-height: 250px; overflow-y: auto; margin-top: 5px;")
+                if coupons && coupons.length > 0
+                  each item in coupons
+                    .coupon-item(data-code=item.code style="padding: 12px 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s;")
+                      div(style="font-weight: bold; color: #2563eb; font-size: 16px; margin-bottom: 4px;") #{item.code}
+                      div(style="font-size: 13px; color: #555;") Giảm: #{item.type == 'percent' ? item.value + '%' : item.value.toLocaleString('vi-VN') + 'đ'}
+                      if item.minOrderValue > 0
+                        div(style="font-size: 12px; color: #888; margin-top: 2px;") Đơn tối thiểu: #{item.minOrderValue.toLocaleString('vi-VN')}đ
+                else
+                  .coupon-item(style="padding: 15px; color: #999; text-align: center;") Không có mã giảm giá nào
             button(type="submit") Dùng Mã
         .inner-list-price
           .inner-item
@@ -27,7 +40,9 @@ block main
               span đ
           .inner-item
             .inner-label Giảm:
-            .inner-price -0đ
+            .inner-price 
+              span(cart-discount) 0
+              span đ
           .inner-item
             .inner-label Thanh toán:
             .inner-price-highlight

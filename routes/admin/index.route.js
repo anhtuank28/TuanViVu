@@ -23,6 +23,7 @@ router.use("/dashboard",authMiddleware.verityToken ,dashboardRoutes);
 router.use("/category",authMiddleware.verityToken, categoryRoutes);
 router.use("/tour",authMiddleware.verityToken, tourRoutes);
 router.use("/order",authMiddleware.verityToken, orderRoutes);
+router.use("/coupon",authMiddleware.verityToken, require("./coupon.route"));
 router.use("/user",authMiddleware.verityToken, userRoutes);
 router.use("/contact",authMiddleware.verityToken, contactRoutes);
 router.use("/setting",authMiddleware.verityToken, settingRoutes);

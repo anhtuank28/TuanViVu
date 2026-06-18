@@ -1,5 +1,6 @@
 const Tour = require("../../models/tour.model");
 const Order = require("../../models/order.model");
+const Coupon = require("../../models/coupon.model");
 const variableHelper=require("../../config/variable");
 const generateHelper=require("../../helpers/generate.helper");
 const sortHelper=require("../../helpers/sort.helper");
@@ -67,6 +68,33 @@ module.exports.createOrder = async (req, res) => {
 
         // tạm tính
         req.body.discount = 0;
+        
+        if (req.body.couponCode) {
+            const couponInfo = await Coupon.findOne({
+                code: req.body.couponCode,
+                status: "active",
+                deleted: false
+            });
+            if (couponInfo && couponInfo.quantity > 0) {
+                if (req.body.subTotal >= couponInfo.minOrderValue) {
+                    if (couponInfo.type === "percent") {
+                        req.body.discount = (req.body.subTotal * couponInfo.value) / 100;
+                    } else {
+                        req.body.discount = couponInfo.value;
+                    }
+                    if (req.body.discount > req.body.subTotal) {
+                        req.body.discount = req.body.subTotal;
+                    }
+                    
+                    // Trừ số lượng coupon
+                    await Coupon.updateOne(
+                        { _id: couponInfo._id },
+                        { $inc: { quantity: -1 } }
+                    );
+                }
+            }
+        }
+        
         // thanh toán
         req.body.total = req.body.subTotal - req.body.discount;
         // trạng thái thanh toán
@@ -344,3 +372,49 @@ module.exports.paymentVnPayResult=async(req,res)=>{
     }
 }
 
+
+module.exports.checkCoupon = async (req, res) => {
+    try {
+        const { code, totalOrder } = req.body;
+        
+        const coupon = await Coupon.findOne({
+            code: code,
+            status: "active",
+            deleted: false
+        });
+
+        if (!coupon) {
+            return res.json({ code: "error", message: "Mã giảm giá không tồn tại hoặc đã hết hạn!" });
+        }
+
+        if (coupon.quantity <= 0) {
+            return res.json({ code: "error", message: "Mã giảm giá đã hết lượt sử dụng!" });
+        }
+
+        if (coupon.expireAt && new Date(coupon.expireAt) < new Date()) {
+            return res.json({ code: "error", message: "Mã giảm giá đã hết hạn!" });
+        }
+
+        if (totalOrder < coupon.minOrderValue) {
+            return res.json({ code: "error", message: `Đơn hàng tối thiểu phải từ ${coupon.minOrderValue.toLocaleString("vi-VN")}đ` });
+        }
+
+        let discount = 0;
+        if (coupon.type === "percent") {
+            discount = (totalOrder * coupon.value) / 100;
+        } else {
+            discount = coupon.value;
+        }
+
+        if (discount > totalOrder) discount = totalOrder;
+
+        return res.json({
+            code: "success",
+            message: "Áp dụng mã giảm giá thành công!",
+            discount: discount
+        });
+    } catch (error) {
+        console.error(error);
+        return res.json({ code: "error", message: "Lỗi hệ thống!" });
+    }
+};

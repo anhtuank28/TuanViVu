@@ -17,6 +17,8 @@ nav.sider
     if (permissions.includes("order-view"))
       li
         a(href=`/${pathAdmin}/order/list`) <i class="fa-solid fa-list-check"></i> Quản lý đơn hàng
+    li
+      a(href=`/${pathAdmin}/coupon/list`) <i class="fa-solid fa-ticket"></i> Quản lý mã giảm giá
     if (permissions.includes("user-view"))
       li
         a(href=`/${pathAdmin}/user/list`) <i class="fa-solid fa-user"></i> Quản lý người dùng
