@@ -104,7 +104,8 @@ module.exports.list=async (req,res)=>{
     }
 
     if (req.query.locationTo) {
-        const locationRegex = new RegExp(req.query.locationTo, "i");
+        const safeLocationTo = req.query.locationTo.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+        const locationRegex = new RegExp(safeLocationTo, "i");
         find.$or = [
             { name: locationRegex },
             { locations: locationRegex }
@@ -142,9 +143,24 @@ module.exports.list=async (req,res)=>{
     }
 
     // Lấy danh sách các Tour thuộc danh mục này
-    const tourList = await Tour.find(find)
-    .skip(skip)
-    .limit(limit);
+    let sort = {};
+    if (req.query.sortKey && req.query.sortKey !== "discount") {
+        sort[req.query.sortKey] = req.query.sortValue === "asc" ? 1 : -1;
+    } else if (!req.query.sortKey) {
+        sort["position"] = -1;
+    }
+
+    let tourList = await Tour.find(find).sort(sort);
+
+    if (req.query.sortKey === "discount") {
+        tourList = tourList.sort((a, b) => {
+            const discountA = a.priceAdult > 0 ? ((a.priceAdult - a.priceNewAdult) / a.priceAdult) * 100 : 0;
+            const discountB = b.priceAdult > 0 ? ((b.priceAdult - b.priceNewAdult) / b.priceAdult) * 100 : 0;
+            return req.query.sortValue === "asc" ? discountA - discountB : discountB - discountA;
+        });
+    }
+
+    tourList = tourList.slice(skip, skip + limit);
     
     tourList.forEach(item => {
         if(item.departureDate) {
@@ -221,7 +237,8 @@ module.exports.listAll = async (req, res) => {
     }
 
     if (req.query.locationTo) {
-        const locationRegex = new RegExp(req.query.locationTo, "i");
+        const safeLocationTo = req.query.locationTo.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+        const locationRegex = new RegExp(safeLocationTo, "i");
         find.$or = [
             { name: locationRegex },
             { locations: locationRegex }
@@ -252,7 +269,24 @@ module.exports.listAll = async (req, res) => {
         find.stockBaby = { $gte: parseInt(req.query.stockBaby) };
     }
 
-    const tourList = await Tour.find(find).skip(skip).limit(limit);
+    let sort = {};
+    if (req.query.sortKey && req.query.sortKey !== "discount") {
+        sort[req.query.sortKey] = req.query.sortValue === "asc" ? 1 : -1;
+    } else if (!req.query.sortKey) {
+        sort["position"] = -1;
+    }
+
+    let tourList = await Tour.find(find).sort(sort);
+
+    if (req.query.sortKey === "discount") {
+        tourList = tourList.sort((a, b) => {
+            const discountA = a.priceAdult > 0 ? ((a.priceAdult - a.priceNewAdult) / a.priceAdult) * 100 : 0;
+            const discountB = b.priceAdult > 0 ? ((b.priceAdult - b.priceNewAdult) / b.priceAdult) * 100 : 0;
+            return req.query.sortValue === "asc" ? discountA - discountB : discountB - discountA;
+        });
+    }
+
+    tourList = tourList.slice(skip, skip + limit);
 
     tourList.forEach(item => {
         if (item.departureDate) {

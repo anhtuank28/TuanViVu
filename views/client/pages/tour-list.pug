@@ -40,6 +40,7 @@ block main
                     .inner-label Người lớn:
                     input(
                       value="0" 
+                      min="0"
                       type="number"
                       name="stockAdult"
                       )
@@ -47,6 +48,7 @@ block main
                     .inner-label Trẻ em:
                     input(
                       value="0" 
+                      min="0"
                       type="number"
                       name="stockChildren"
                       )
@@ -54,6 +56,7 @@ block main
                     .inner-label Em bé:
                     input(
                       value="0" 
+                      min="0"
                       type="number"
                       name="stockBaby"
                       )
@@ -79,18 +82,15 @@ block main
             .inner-sort
               .inner-label Sắp xếp:
               .inner-list
-                button
+                button(sort-key="priceNewAdult" sort-value="asc")
                   | Giá tăng dần
                   i.fa-solid.fa-square-caret-up
-                button
+                button(sort-key="priceNewAdult" sort-value="desc")
                   | Giá giảm dần
                   i.fa-solid.fa-square-caret-down
-                button.active
+                button(sort-key="discount" sort-value="desc")
                   | Khuyến Mại Hot
                   i.fa-solid.fa-tag
-                button
-                  | Xem Nhiều
-                  i.fa-solid.fa-eye
             .inner-count-record
               | Tất cả: 
               b #{totalTour} Tour

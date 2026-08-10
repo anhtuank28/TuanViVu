@@ -10,9 +10,10 @@ mixin product-item(item)
           alt=item.name
           src=item.avatar
           )
-    .inner-discount
-      i.fa-solid.fa-bolt
-      | Giảm -#{discount}%
+      if(discount > 0)
+        .inner-discount
+          i.fa-solid.fa-bolt
+          | -#{discount}%
     .inner-content
       h3.inner-title
         a(href=`/tour/detail/${item.slug}`) #{item.name}
@@ -25,23 +26,14 @@ mixin product-item(item)
           | #{priceNewAdult.toLocaleString("vi-VN")}
           span.inner-unit đ
       .inner-desc
-        //- .inner-desc-item
-        //-   | Mã Tour:
-        //-   b #{item.code}
         .inner-desc-item
-          | Ngày Khởi Hành:
+          i.fa-regular.fa-calendar-days
           b #{item.departureDateFormat}
-        .inner-desc-item
-          | Thời Gian:
-          b #{item.time}
+        if(item.time)
+          .inner-desc-item
+            i.fa-regular.fa-clock
+            b #{item.time}
       .inner-meta
-        //- .inner-rating
-        //-   .inner-stars
-        //-     - for(let i = 1; i <= item.ratingStars; i++)
-        //-       i.fa-solid.fa-star
-        //-     - for(let j = item.ratingStars + 1; j <= 5; j++)
-        //-       i.fa-regular.fa-star
-        //-   .inner-number (#{item.ratingTotal})
         .inner-stock
-          .inner-label Số chỗ còn:
+          .inner-label Số chỗ còn
           .inner-number #{item.stockAdult}

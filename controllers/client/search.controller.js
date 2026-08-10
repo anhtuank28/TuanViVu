@@ -5,7 +5,8 @@ const moment = require("moment");
 module.exports.list = async (req, res) => {
     try {
         let keyword = req.query.keyword || "";
-        const keywordRegex = new RegExp(keyword, "i");
+        const safeKeyword = keyword.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+        const keywordRegex = new RegExp(safeKeyword, "i");
         
         let page = parseInt(req.query.page) || 1;
         let limit = 6;
@@ -25,7 +26,8 @@ module.exports.list = async (req, res) => {
         }
 
         if (req.query.locationTo) {
-            const locationRegex = new RegExp(req.query.locationTo, "i");
+            const safeLocationTo = req.query.locationTo.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+            const locationRegex = new RegExp(safeLocationTo, "i");
             find.$or = [
                 { name: locationRegex },
                 { locations: locationRegex }
@@ -52,7 +54,24 @@ module.exports.list = async (req, res) => {
             }
         }
 
-        const tourList = await Tour.find(find).sort({position:"desc"}).skip(skip).limit(limit);
+        let sort = {};
+        if (req.query.sortKey && req.query.sortKey !== "discount") {
+            sort[req.query.sortKey] = req.query.sortValue === "asc" ? 1 : -1;
+        } else if (!req.query.sortKey) {
+            sort["position"] = -1;
+        }
+
+        let tourList = await Tour.find(find).sort(sort);
+
+        if (req.query.sortKey === "discount") {
+            tourList = tourList.sort((a, b) => {
+                const discountA = a.priceAdult > 0 ? ((a.priceAdult - a.priceNewAdult) / a.priceAdult) * 100 : 0;
+                const discountB = b.priceAdult > 0 ? ((b.priceAdult - b.priceNewAdult) / b.priceAdult) * 100 : 0;
+                return req.query.sortValue === "asc" ? discountA - discountB : discountB - discountA;
+            });
+        }
+
+        tourList = tourList.slice(skip, skip + limit);
 
         tourList.forEach(item => {
             if(item.departureDate) {

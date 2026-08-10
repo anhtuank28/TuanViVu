@@ -1,3 +1,4 @@
+
 // Header Scroll Effect
 window.addEventListener('scroll', () => {
   const header = document.querySelector('.header');
@@ -969,3 +970,220 @@ if(pageCart) {
   drawCart();
 }
 // End Page Cart
+
+// Sort Tour
+const sortButtons = document.querySelectorAll(".inner-sort button");
+if(sortButtons.length > 0) {
+  const url = new URL(window.location.href);
+  
+  sortButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const sortKey = button.getAttribute("sort-key");
+      const sortValue = button.getAttribute("sort-value");
+      
+      if(sortKey && sortValue) {
+        url.searchParams.set("sortKey", sortKey);
+        url.searchParams.set("sortValue", sortValue);
+        url.searchParams.delete("page"); // reset pagination
+        window.location.href = url.href;
+      }
+    });
+  });
+
+  // Active state based on URL
+  const currentSortKey = url.searchParams.get("sortKey");
+  const currentSortValue = url.searchParams.get("sortValue");
+  if(currentSortKey && currentSortValue) {
+    sortButtons.forEach(button => {
+      button.classList.remove("active");
+      if(button.getAttribute("sort-key") === currentSortKey && button.getAttribute("sort-value") === currentSortValue) {
+        button.classList.add("active");
+      }
+    });
+  } else {
+    sortButtons.forEach(button => button.classList.remove("active"));
+  }
+}
+// End Sort Tour
+// Client Login Form
+const clientLoginForm = document.querySelector("#login-form");
+if (clientLoginForm) {
+  const validation = new JustValidate("#login-form");
+
+  validation
+    .addField("#email", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập email của bạn!",
+      },
+      {
+        rule: "email",
+        errorMessage: "Email không đúng định dạng!",
+      },
+    ])
+    .addField("#password", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập mật khẩu!",
+      }
+    ])
+    .onSuccess((event) => {
+      const email = event.target.email.value;
+      const password = event.target.password.value;
+
+      const dataFinal = {
+        email: email,
+        password: password
+      };
+
+      fetch(`/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              icon: "error",
+              title: data.message
+            });
+            event.target.password.value = "";
+          }
+
+          if (data.code == "success") {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 1500,
+              icon: "success",
+              title: data.message
+            }).then(() => {
+              window.location.href = `/`;
+            });
+          }
+        });
+    });
+}
+// End Client Login Form
+
+// Client Register Form
+const clientRegisterForm = document.querySelector("#register-form");
+if (clientRegisterForm) {
+  const validation = new JustValidate("#register-form");
+
+  validation
+    .addField("#fullName", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập họ tên!",
+      },
+      {
+        rule: "minLength",
+        value: 5,
+        errorMessage: "Họ tên phải có ít nhất 5 ký tự!",
+      },
+      {
+        rule: "maxLength",
+        value: 50,
+        errorMessage: "Họ tên không được vượt quá 50 ký tự!",
+      },
+    ])
+    .addField("#email", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập email của bạn!",
+      },
+      {
+        rule: "email",
+        errorMessage: "Email không đúng định dạng!",
+      },
+    ])
+    .addField("#password", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập mật khẩu!",
+      },
+      {
+        validator: (value) => value.length >= 8,
+        errorMessage: "Mật khẩu phải chứa ít nhất 8 ký tự!",
+      },
+      {
+        validator: (value) => /[A-Z]/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một chữ cái in hoa!",
+      },
+      {
+        validator: (value) => /[a-z]/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một chữ cái thường!",
+      },
+      {
+        validator: (value) => /\d/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một chữ số!",
+      },
+      {
+        validator: (value) => /[@$!%*?&#]/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một ký tự đặc biệt!",
+      },
+    ])
+    .addField("#agree", [
+      {
+        rule: "required",
+        errorMessage: "Bạn phải đồng ý với các điều khoản và điều kiện!",
+      },
+    ])
+    .onSuccess((event) => {
+      const fullName = event.target.fullName.value;
+      const email = event.target.email.value;
+      const password = event.target.password.value;
+      const phone = event.target.phone ? event.target.phone.value : "";
+
+      const dataFinal = {
+        fullName: fullName,
+        email: email,
+        password: password,
+        phone: phone
+      };
+
+      fetch(`/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              icon: "error",
+              title: data.message
+            });
+            event.target.password.value = "";
+          }
+          if (data.code == "success") {
+            Swal.fire({
+              icon: "success",
+              title: "Thành công!",
+              text: data.message,
+              confirmButtonColor: "#0369A1",
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => {
+              window.location.href = `/`;
+            });
+          }
+        });
+    });
+}
+// End Client Register Form

@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-const port = 3000;
+const port = 3001;
 const { log } = require("console");
 require("dotenv").config();
 const adminRoutes = require("./routes/admin/index.route");

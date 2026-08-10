@@ -45,12 +45,23 @@ header.header(class=(!isHome ? "header--normal" : ""))
 
         .inner-overlay
 
-      // Cart
-      .inner-cart
-        a(href="/cart")
-          img(
-            alt="Cart" 
-            src="/assets/images/icon-cart.svg"
-          )
-          span(mini-cart) 0
+      .inner-actions(style="display: flex; align-items: center; gap: 15px;")
+        // Cart
+        .inner-cart
+          a(href="/cart")
+            img(
+              alt="Cart" 
+              src="/assets/images/icon-cart.svg"
+            )
+            span(mini-cart) 0
+        
+        // Auth
+        .inner-auth(style="display: flex; align-items: center; gap: 8px;")
+          if user
+            span(class="auth-user-name") Xin chào, #{user.fullName}
+            a(href="/auth/logout" class="btn-auth-logout") <i class="fa-solid fa-sign-out-alt"></i> Thoát
+          else
+            a(href="/auth/login" class="btn-auth-login") Đăng nhập
+            a(href="/auth/register" class="btn-auth-register") Đăng ký
+
 // End Header

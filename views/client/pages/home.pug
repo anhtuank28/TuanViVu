@@ -97,7 +97,7 @@ block main
       .inner-wrap
         .inner-info
           h2.inner-title
-            | ƯU ĐÃI 2024
+            | ƯU ĐÃI 2026
             br
             | TOUR GIỜ CHÓT
           .inner-desc Nhanh tay đặt ngay các tour du lịch với giá cực sốc. Cơ hội có 1-0-2 trong năm, số lượng có hạn! Đừng bỏ lỡ!
@@ -232,11 +232,10 @@ block main
             div(class=(index === 1 ? 'blog-item-2' : 'blog-item'))
               a(href=`/article/${item.slug}`)
                 .inner-image
-                  img(src=item.avatar, alt=item.title, style="width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/3;")
+                  img(src=item.avatar, alt=item.title, style="width: 100%; height: 100%; object-fit: cover; image-rendering: high-quality;")
                 .inner-content
                   .inner-date #{new Date(item.createdAt).toLocaleDateString('vi-VN')}
                   h3.inner-title #{item.title}
-
         else
           p Hiện chưa có bài viết nào.
   // End Section 8

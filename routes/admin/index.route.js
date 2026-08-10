@@ -12,6 +12,11 @@ const articleRoutes = require("./article.route");
 
 const authMiddleware=require("../../middlewares/admin/auth.middleware");
 
+// Redirect root to dashboard
+router.get("/", (req, res) => {
+  res.redirect(`/${require("../../config/variable").pathAdmin}/dashboard`);
+});
+
 
 router.use((req,res,next)=>{
   res.setHeader("Cache-control","no-store")

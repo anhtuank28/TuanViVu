@@ -10,10 +10,14 @@ const articleRoutes=require("./article.route");
 
 const settingMiddleWare=require("../../middlewares/client/setting.middleware");
 const categoryMiddleWare=require("../../middlewares/client/category.middleware");
+const authMiddleWare = require("../../middlewares/client/auth.middleware");
 
-router.use(settingMiddleWare.websiteInfo)
-router.use(categoryMiddleWare.list)
+router.use(settingMiddleWare.websiteInfo);
+router.use(categoryMiddleWare.list);
+router.use(authMiddleWare.userInfo);
+
 router.use("/", homeRoutes);
+router.use("/auth", require("./auth.route"));
 
 router.use("/tour", tourRoutes);
 router.use("/cart", cartRoutes);
