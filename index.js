@@ -43,5 +43,3 @@ app.use("/", clientRoutes);
 app.listen(port, () => {
   console.log(`Web đang cổng ${port}`);
 });
-
-module.exports = app;
