@@ -3224,3 +3224,58 @@ input, button, textarea {
   border-color: #dc2626;
   color: #ffffff;
 }
+
+/* MOBILE FIXES FROM SENIOR FE */
+@media (max-width: 575.98px) {
+  /* 1. Header Layout */
+  .header .inner-wrap {
+    gap: 5px;
+  }
+  .header .inner-logo img {
+    height: 32px !important; 
+  }
+  .header .inner-actions {
+    gap: 8px !important;
+  }
+  .header .inner-auth {
+    gap: 4px !important;
+  }
+  .btn-auth-login, .btn-auth-register, .btn-auth-logout {
+    padding: 5px 8px !important;
+    font-size: 11px !important;
+  }
+  .auth-user-name {
+    display: none !important; 
+  }
+
+  /* 2. Social Media Bar */
+  .box-contact {
+    display: none !important; 
+  }
+
+  /* 3. Background Video */
+  .section-1__video-bg {
+    min-width: unset !important;
+    min-height: unset !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+
+  /* 4. Form Padding & Whitespace */
+  .section-1 {
+    padding: 100px 15px 40px 15px !important;
+  }
+  .section-1 .inner-title {
+    font-size: 24px !important;
+    padding: 0 10px !important;
+  }
+  .section-1 .inner-desc {
+    padding: 0 10px !important;
+    margin-bottom: 25px !important;
+  }
+  .section-1 .inner-form {
+    padding: 20px 15px !important;
+  }
+}
